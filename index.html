@@ -18,18 +18,27 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <style>
-        /* --- GLOBAL RESET (Fixes the cutoff issue) --- */
+        /* --- GLOBAL RESET & SAFETY --- */
         * { box-sizing: border-box; } 
+        
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f6f6f6; 
+            font-family: "Georgia", "Times New Roman", serif; 
+            color: #333; 
+            line-height: 1.6; 
+            font-size: 16px; 
+            overflow-x: hidden; /* CUTOFF FIX: Prevents horizontal scrolling */
+        }
 
-        /* --- 1. Typography & Reset --- */
-        body { margin: 0; padding: 0; background-color: #f6f6f6; font-family: "Georgia", "Times New Roman", serif; color: #333; line-height: 1.6; font-size: 16px; }
         a { color: #0066cc; text-decoration: none; }
         a:hover { text-decoration: underline; }
 
         /* --- 2. Layout --- */
         .wrapper { 
             max-width: 960px; 
-            width: 100%; /* Ensures it shrinks on smaller screens */
+            width: 96%; /* CUTOFF FIX: Use 96% so borders don't touch screen edges */
             margin: 0 auto; 
             background-color: #ffffff; 
             border-left: 1px solid #ddd; 
@@ -49,8 +58,10 @@
 
         /* --- 5. Main Content Area --- */
         .container { display: flex; padding: 30px 40px; }
-        .content { flex: 2; padding-right: 40px; }
-        .sidebar { flex: 1; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; color: #666; border-left: 1px solid #eee; padding-left: 20px; }
+        
+        /* CUTOFF FIX: min-width: 0 prevents flex items from forcing overflow */
+        .content { flex: 2; padding-right: 40px; min-width: 0; } 
+        .sidebar { flex: 1; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; color: #666; border-left: 1px solid #eee; padding-left: 20px; min-width: 0; }
 
         /* --- 6. Post Styling --- */
         .post { margin-bottom: 60px; border-bottom: 1px solid #eee; padding-bottom: 40px; }
@@ -58,7 +69,6 @@
         .post-title { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 24px; font-weight: bold; margin-bottom: 5px; color: #000; }
         .post-date { font-size: 11px; color: #888; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Typography adjustments for content */
         h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 18px; margin-top: 30px; border-bottom: 2px solid #333; padding-bottom: 5px; }
         h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; margin-top: 25px; font-weight: bold; color: #444; }
         p { margin-bottom: 1.2em; text-align: left; }
@@ -75,11 +85,12 @@
 
         /* Mobile Fix */
         @media (max-width: 768px) {
-            .container { flex-direction: column; }
-            .sidebar { border-left: none; padding-left: 0; margin-top: 40px; }
-            nav a { display: block; margin-bottom: 10px; }
-            .wrapper { border: none; }
+            .container { flex-direction: column; padding: 20px; } /* Reduced padding on mobile */
+            .sidebar { border-left: none; padding-left: 0; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
             .content { padding-right: 0; }
+            nav { padding: 15px 20px; }
+            nav a { display: block; margin-bottom: 10px; }
+            header { padding: 30px 20px; }
         }
     </style>
 </head>
