@@ -29,16 +29,16 @@
             color: #333; 
             line-height: 1.6; 
             font-size: 16px; 
-            overflow-x: hidden; /* CUTOFF FIX: Prevents horizontal scrolling */
+            overflow-x: hidden; 
         }
 
         a { color: #0066cc; text-decoration: none; }
         a:hover { text-decoration: underline; }
 
-        /* --- 2. Layout --- */
+        /* --- Layout --- */
         .wrapper { 
             max-width: 960px; 
-            width: 96%; /* CUTOFF FIX: Use 96% so borders don't touch screen edges */
+            width: 96%; 
             margin: 0 auto; 
             background-color: #ffffff; 
             border-left: 1px solid #ddd; 
@@ -46,24 +46,18 @@
             min-height: 100vh; 
         }
 
-        /* --- 3. Header --- */
         header { padding: 40px 40px 20px 40px; background-color: #ffffff; color: #333; border-bottom: 1px solid #eee; }
         header h1 { margin: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 32px; letter-spacing: -1px; margin-bottom: 5px; }
         header .tagline { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #888; font-style: italic; }
 
-        /* --- 4. Navigation Menu --- */
         nav { padding: 15px 40px; background-color: #fafafa; border-bottom: 1px solid #eee; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; text-transform: uppercase; }
         nav a { margin-right: 25px; color: #444; }
         nav a:hover { color: #0066cc; }
 
-        /* --- 5. Main Content Area --- */
         .container { display: flex; padding: 30px 40px; }
-        
-        /* CUTOFF FIX: min-width: 0 prevents flex items from forcing overflow */
         .content { flex: 2; padding-right: 40px; min-width: 0; } 
         .sidebar { flex: 1; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; color: #666; border-left: 1px solid #eee; padding-left: 20px; min-width: 0; }
 
-        /* --- 6. Post Styling --- */
         .post { margin-bottom: 60px; border-bottom: 1px solid #eee; padding-bottom: 40px; }
         .post:last-child { border-bottom: none; }
         .post-title { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 24px; font-weight: bold; margin-bottom: 5px; color: #000; }
@@ -72,20 +66,16 @@
         h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 18px; margin-top: 30px; border-bottom: 2px solid #333; padding-bottom: 5px; }
         h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; margin-top: 25px; font-weight: bold; color: #444; }
         p { margin-bottom: 1.2em; text-align: left; }
-        li { margin-bottom: 8px; }
-
-        /* Code block styling */
+        
         pre { background:#f4f4f4; padding:15px; border-radius:5px; font-family: "Monaco", "Courier New", monospace; font-size:13px; overflow-x: auto; border: 1px solid #eee; }
 
-        /* --- 7. Sidebar Widgets --- */
         .widget { margin-bottom: 40px; }
         .widget h3 { font-size: 11px; text-transform: uppercase; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; margin-top: 0; }
         .widget ul { list-style: none; padding: 0; margin: 0; }
         .widget li { margin-bottom: 8px; }
 
-        /* Mobile Fix */
         @media (max-width: 768px) {
-            .container { flex-direction: column; padding: 20px; } /* Reduced padding on mobile */
+            .container { flex-direction: column; padding: 20px; }
             .sidebar { border-left: none; padding-left: 0; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
             .content { padding-right: 0; }
             nav { padding: 15px 20px; }
@@ -97,7 +87,6 @@
 <body>
 
 <div class="wrapper">
-    
     <header>
         <h1>Proof by Pixel</h1>
         <div class="tagline">A Data Science Blog: Learning & proving concepts one pixel at a time.</div>
@@ -118,7 +107,6 @@
                 <div class="post-date">19 December 2025</div> 
                 
                 <div class="post-body">
-                    
                     <h3>I. The Theory</h3>
                     <p><em>Started with vectors, the theory.</em></p>
 
@@ -202,23 +190,46 @@ plot_arrow(origin, result, 'green', 'Result = [4, 6]')
 
                     <p><strong>The Output:</strong></p>
                     
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px;">
-                        <img src="image_5632f2.png" alt="Vector Addition Plot" style="max-width:100%; height:auto;">
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
+                        <svg width="100%" height="auto" viewBox="0 0 500 700" style="max-width:400px; display:inline-block;">
+                            <defs>
+                                <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="blue" />
+                                </marker>
+                                <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="red" />
+                                </marker>
+                                <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                    <polygon points="0 0, 10 3.5, 0 7" fill="green" />
+                                </marker>
+                            </defs>
+                            
+                            <g stroke="#eee" stroke-width="1">
+                                <line x1="50" y1="650" x2="450" y2="650" /> <line x1="50" y1="650" x2="50" y2="50" />   </g>
+
+                            <line x1="50" y1="650" x2="130" y2="490" stroke="blue" stroke-width="3" marker-end="url(#arrow-blue)" />
+                            
+                            <line x1="130" y1="490" x2="370" y2="170" stroke="red" stroke-width="3" marker-end="url(#arrow-red)" />
+                            
+                            <line x1="50" y1="650" x2="370" y2="170" stroke="green" stroke-width="3" marker-end="url(#arrow-green)" />
+                            
+                            <text x="70" y="550" fill="blue" font-family="sans-serif" font-size="14">a = [1, 2]</text>
+                            <text x="250" y="320" fill="red" font-family="sans-serif" font-size="14">b = [3, 4]</text>
+                            <text x="260" y="450" fill="green" font-family="sans-serif" font-size="14" font-weight="bold">Result = [4, 6]</text>
+                        </svg>
                         <br><em style="font-size:12px; color:#888;">Figure 1: Visual proof that [1,2] + [3,4] lands us exactly at [4,6].</em>
                     </div>
 
                     <p>The Green arrow (the result) points exactly to where the Red arrow ends. This visually confirms that <code>numpy</code> arrays are the true programmatic equivalent of Euclidean vectors.</p>
                 </div>
             </div>
-            </div>
+        </div>
 
         <div class="sidebar">
-            
             <div class="widget">
                 <h3>The Editors: Abhinav Rastogi & Stuti Goyal</h3>
                 <p>We are MBA students at IIT Madras (Class of 2027) exploring the intersection of Data Science and Strategy.</p>
             </div>
-
             <div class="widget">
                 <h3>Research Interests</h3>
                 <ul>
@@ -228,16 +239,12 @@ plot_arrow(origin, result, 'green', 'Result = [4, 6]')
                     <li><a href="#">Python for Data Science</a></li>
                 </ul>
             </div>
-
             <div class="widget">
                 <h3>Search</h3>
                 <input type="text" placeholder="Search..." style="width: 100%; padding: 5px; margin-top: 5px;">
             </div>
-
         </div>
     </div>
 </div>
-
 </body>
 </html>
-
