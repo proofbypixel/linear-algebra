@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,5 +35,198 @@
         .post { margin-bottom: 60px; border-bottom: 1px solid #eee; padding-bottom: 40px; }
         .post:last-child { border-bottom: none; }
         .post-title { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 24px; font-weight: bold; margin-bottom: 5px; color: #000; }
-        .post-date { font-size: 11px; color:
+        .post-date { font-size: 11px; color: #888; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Typography adjustments for content */
+        h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 18px; margin-top: 30px; border-bottom: 2px solid #333; padding-bottom: 5px; }
+        h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; margin-top: 25px; font-weight: bold; color: #444; }
+        p { margin-bottom: 1.2em; text-align: left; }
+        li { margin-bottom: 8px; }
 
+        /* Code block styling */
+        pre { background:#f4f4f4; padding:15px; border-radius:5px; font-family: "Monaco", "Courier New", monospace; font-size:13px; overflow-x: auto; border: 1px solid #eee; }
+
+        /* --- 7. Sidebar Widgets --- */
+        .widget { margin-bottom: 40px; }
+        .widget h3 { font-size: 11px; text-transform: uppercase; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; margin-top: 0; }
+        .widget ul { list-style: none; padding: 0; margin: 0; }
+        .widget li { margin-bottom: 8px; }
+
+        /* Mobile Fix */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { border-left: none; padding-left: 0; margin-top: 40px; }
+            nav a { display: block; margin-bottom: 10px; }
+            .wrapper { border: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    
+    <header>
+        <h1>Proof by Pixel</h1>
+        <div class="authors">Written by Abhinav Rastogi & Stuti Goyal</div>
+        <div class="tagline">A Data Science Blog: Learning & proving concepts one pixel at a time.</div>
+    </header>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">About Us</a>
+        <a href="#">Level 1</a>
+        <a href="#">Level 2</a>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            
+            <div class="post">
+                <div class="post-title"><a href="#">Log 001: The Anatomy of a Vector</a></div>
+                <div class="post-date">19 December 2025 | By Abhinav & Stuti</div>
+                
+                <div class="post-body">
+                    
+                    <h3>I. The Theory (Abhinav)</h3>
+                    <p><em>Started with vectors, the theory.</em></p>
+
+                    <p><strong>1. Pretty abstract to start with:</strong><br>
+                    Vectors are elements of a vector space $V$. There can’t be a vector in isolation; there has to be a structure around it.</p>
+
+                    <p><strong>2. What is a vector space?</strong><br>
+                    A Vector Space is a set $V$ combined with a Field $\mathbb{F}$ (usually real numbers, $\mathbb{R}$) equipped with two fundamental operations:</p>
+                    <ul>
+                        <li><strong>Vector Addition:</strong> $\mathbf{u} + \mathbf{v} \in V$ <br><span style="color:#666; font-size:0.9em;">(If you add two vectors, you get a vector).</span></li>
+                        <li><strong>Scalar Multiplication:</strong> $c \cdot \mathbf{v} \in V$ <br><span style="color:#666; font-size:0.9em;">(If you scale a vector, you get a vector).</span></li>
+                    </ul>
+
+                    <p><strong>3. The Axioms:</strong><br>
+                    A set is a vector space if and only if it satisfies 8 specific rules, such as Associativity, Commutativity, and the existence of an Identity Element ($\mathbf{0}$).</p>
+
+                    <p><strong>4. Functions as Vectors:</strong><br>
+                    Since functions also obey these rules (you can add $f(x) + g(x)$), mathematically, they are vectors too. This is the basis of Functional Analysis.</p>
+
+                    <p><strong>5. In the Euclidean space:</strong><br>
+                    In Data Science, we usually work in $\mathbb{R}^n$. Here, a vector $\mathbf{v}$ is an $n$-tuple of real numbers:
+                    $$ \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix} $$
+                    </p>
+
+                    <p><strong>6. Geometrically (The Tensor View):</strong><br>
+                    Vectors are defined by how they handle coordinate transformations. It’s intuitive to understand this with the transformation rule using the <strong>Jacobian Matrix</strong>. A vector must transform <em>against</em> the change of basis (Contravariance):
+                    $$ v'^i = \sum_{j=1}^n \frac{\partial x'^i}{\partial x^j} v^j $$
+                    </p>
+
+                    <br><hr><br>
+
+                    <h3>II. The Lab (Stuti)</h3>
+                    <p><em>Understanding vectors using Python.</em></p>
+
+                    <h4>1. Vector Addition: Using NumPy</h4>
+                    <p>We use <code>numpy</code> because standard Python lists just concatenate instead of adding. 2D vectors must add up to give a new 2D vector.</p>
+
+<pre>
+import numpy as np
+
+# Defining vectors
+a = np.array([1, 2])
+b = np.array([3, 4])
+
+print(f"a + b = {a + b}")
+# Output: [4 6]
+</pre>
+                    <p>It stays in $\mathbb{R}^2$ and even $b + a$ gives the same result, hence commutativity holds.</p>
+
+                    <h4>2. Visual Proof: Breaking down the Matplotlib Code</h4>
+                    <p>To prove that <code>[4, 6]</code> is actually the result of "walking" along the vectors, we visualized it. Here is the breakdown of the code we used to generate the plot.</p>
+
+                    <p><strong>Step A: The Setup</strong><br>
+                    First, we define a helper function to draw arrows. The function uses <code>plt.quiver</code>, which is designed for vector fields.</p>
+<pre>
+def plot_arrow(start, vector, color, label):
+    plt.quiver(*start, *vector, angles='xy', scale_units='xy', scale=1, color=color, label=label)
+</pre>
+                    <p><em>Why those weird parameters?</em></p>
+                    <ul>
+                        <li><code>*start, *vector</code>: Unpacks the list (e.g., turns <code>[1,2]</code> into <code>1, 2</code>).</li>
+                        <li><code>angles='xy'</code>: Tells Matplotlib that the arrow directions should be based on the x,y data coordinates, not the screen pixels.</li>
+                        <li><code>scale_units='xy', scale=1</code>: <strong>Crucial.</strong> This forces a 1:1 ratio. Without this, Matplotlib autoscales arrows to look "nice," which ruins the math. We want an arrow of length 1 to actually span 1 unit on the graph.</li>
+                    </ul>
+
+                    <p><strong>Step B: The Plotting</strong><br>
+                    We plot the first vector ($\vec{a}$), and then—this is the trick—we plot the second vector ($\vec{b}$) <strong>starting from the tip of $\vec{a}$</strong>.</p>
+<pre>
+origin = [0, 0]
+
+# 1. The First Step (Blue)
+plot_arrow(origin, a, 'blue', 'a = [1, 2]')
+
+# 2. The Second Step (Red) - Notice the start point is 'a'
+plot_arrow(a, b, 'red', 'b = [3, 4]')
+
+# 3. The Result (Green) - From Origin to Destination
+result = a + b
+plot_arrow(origin, result, 'green', 'Result = [4, 6]')
+</pre>
+
+                    <p><strong>The Output:</strong></p>
+                    
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px;">
+                        <img src="image_5632f2.png" alt="Vector Addition Plot" style="max-width:100%; height:auto;">
+                        <br><em style="font-size:12px; color:#888;">Figure 1: Visual proof that [1,2] + [3,4] lands us exactly at [4,6].</em>
+                    </div>
+
+                    <p>The Green arrow (the result) points exactly to where the Red arrow ends. This visually confirms that <code>numpy</code> arrays are the true programmatic equivalent of Euclidean vectors.</p>
+                </div>
+            </div>
+            <div class="post">
+                <div class="post-title"><a href="#">Understanding Linear Independence</a></div>
+                <div class="post-date">18 December, 2025 | By Abhinav</div>
+                
+                <div class="post-body">
+                    <p>I've just uploaded to the repo my latest visualization on <strong>Linear Independence</strong>. This project resolves the intuition gap between abstract vector math and real-world resource allocation.</p>
+                    
+                    <p>Specifically, we look at the question of bounding the "Efficiency Frontier" when your resources (basis vectors) are imperfect.</p>
+
+                    <p>Below is the simulation I built to demonstrate this "Skewed Basis" problem:</p>
+
+                    <div style="border: 1px solid #ddd; padding: 20px; text-align: center; background: #fff;">
+                        <iframe src="animation.html" width="100%" height="500px" style="border:none;"></iframe>
+                        <br><br>
+                        <a href="animation.html" style="font-size:12px;">(Click here if simulation does not load)</a>
+                    </div>
+
+                    <p>The proof of this concept is visually intuitive: as long as the vectors are linearly independent, the determinant is non-zero, and we can solve for a unique strategy.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sidebar">
+            
+            <div class="widget">
+                <h3>The Editors</h3>
+                <p>We are <strong>Abhinav Rastogi</strong> and <strong>Stuti Goyal</strong>.</p>
+                <p>We are MBA candidates at IIT Madras (Class of 2027) exploring the intersection of Data Science and Strategy.</p>
+            </div>
+
+            <div class="widget">
+                <h3>Research Interests</h3>
+                <ul>
+                    <li><a href="#">Linear Algebra</a></li>
+                    <li><a href="#">Statistics & Regression</a></li>
+                    <li><a href="#">Organizational Dynamics</a></li>
+                    <li><a href="#">Python for Data Science</a></li>
+                </ul>
+            </div>
+
+            <div class="widget">
+                <h3>Search</h3>
+                <input type="text" placeholder="Search..." style="width: 100%; padding: 5px; margin-top: 5px;">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
