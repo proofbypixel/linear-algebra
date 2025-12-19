@@ -15,17 +15,27 @@
             }
         };
     </script>
-
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <style>
+        /* --- GLOBAL RESET (Fixes the cutoff issue) --- */
+        * { box-sizing: border-box; } 
+
         /* --- 1. Typography & Reset --- */
         body { margin: 0; padding: 0; background-color: #f6f6f6; font-family: "Georgia", "Times New Roman", serif; color: #333; line-height: 1.6; font-size: 16px; }
         a { color: #0066cc; text-decoration: none; }
         a:hover { text-decoration: underline; }
 
         /* --- 2. Layout --- */
-        .wrapper { max-width: 960px; margin: 0 auto; background-color: #ffffff; border-left: 1px solid #ddd; border-right: 1px solid #ddd; min-height: 100vh; }
+        .wrapper { 
+            max-width: 960px; 
+            width: 100%; /* Ensures it shrinks on smaller screens */
+            margin: 0 auto; 
+            background-color: #ffffff; 
+            border-left: 1px solid #ddd; 
+            border-right: 1px solid #ddd; 
+            min-height: 100vh; 
+        }
 
         /* --- 3. Header --- */
         header { padding: 40px 40px 20px 40px; background-color: #ffffff; color: #333; border-bottom: 1px solid #eee; }
@@ -69,6 +79,7 @@
             .sidebar { border-left: none; padding-left: 0; margin-top: 40px; }
             nav a { display: block; margin-bottom: 10px; }
             .wrapper { border: none; }
+            .content { padding-right: 0; }
         }
     </style>
 </head>
@@ -218,4 +229,3 @@ plot_arrow(origin, result, 'green', 'Result = [4, 6]')
 
 </body>
 </html>
-
