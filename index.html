@@ -7,48 +7,41 @@
 
     <script>
         window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']]
-            },
-            svg: {
-                fontCache: 'global'
-            }
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
-    <style>
-        /* --- GLOBAL RESET & SAFETY --- */
-        * { box-sizing: border-box; } 
-        
-        body { 
-            margin: 0; 
-            padding: 0; 
-            background-color: #f6f6f6; 
-            font-family: "Georgia", "Times New Roman", serif; 
-            color: #333; 
-            line-height: 1.6; 
-            font-size: 16px; 
-            overflow-x: hidden; 
+    <script>
+        function togglePost(id) {
+            var fullContent = document.getElementById(id + '-full');
+            var summary = document.getElementById(id + '-summary');
+            
+            if (fullContent.style.display === "none") {
+                fullContent.style.display = "block";
+                summary.style.display = "none";
+                // Re-render math in case it was hidden
+                if (window.MathJax) MathJax.typesetPromise(); 
+            } else {
+                fullContent.style.display = "none";
+                summary.style.display = "block";
+            }
         }
+    </script>
 
-        a { color: #0066cc; text-decoration: none; }
+    <style>
+        /* --- GLOBAL RESET --- */
+        * { box-sizing: border-box; } 
+        body { margin: 0; padding: 0; background-color: #f6f6f6; font-family: "Georgia", "Times New Roman", serif; color: #333; line-height: 1.6; font-size: 16px; overflow-x: hidden; }
+        a { color: #0066cc; text-decoration: none; cursor: pointer; }
         a:hover { text-decoration: underline; }
 
-        /* --- Layout --- */
-        .wrapper { 
-            max-width: 960px; 
-            width: 96%; 
-            margin: 0 auto; 
-            background-color: #ffffff; 
-            border-left: 1px solid #ddd; 
-            border-right: 1px solid #ddd; 
-            min-height: 100vh; 
-        }
-
-        header { padding: 40px 40px 20px 40px; background-color: #ffffff; color: #333; border-bottom: 1px solid #eee; }
-        header h1 { margin: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 32px; letter-spacing: -1px; margin-bottom: 5px; }
-        header .tagline { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #888; font-style: italic; }
+        /* --- LAYOUT --- */
+        .wrapper { max-width: 960px; width: 96%; margin: 0 auto; background-color: #ffffff; border-left: 1px solid #ddd; border-right: 1px solid #ddd; min-height: 100vh; }
+        header { padding: 40px 40px 20px 40px; background-color: #ffffff; border-bottom: 1px solid #eee; }
+        header h1 { margin: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 32px; letter-spacing: -1px; }
+        .tagline { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #888; font-style: italic; }
 
         nav { padding: 15px 40px; background-color: #fafafa; border-bottom: 1px solid #eee; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; text-transform: uppercase; }
         nav a { margin-right: 25px; color: #444; }
@@ -58,17 +51,49 @@
         .content { flex: 2; padding-right: 40px; min-width: 0; } 
         .sidebar { flex: 1; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; color: #666; border-left: 1px solid #eee; padding-left: 20px; min-width: 0; }
 
-        .post { margin-bottom: 60px; border-bottom: 1px solid #eee; padding-bottom: 40px; }
+        /* --- POST STYLING --- */
+        .post { margin-bottom: 40px; border-bottom: 1px solid #eee; padding-bottom: 40px; }
         .post:last-child { border-bottom: none; }
-        .post-title { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 24px; font-weight: bold; margin-bottom: 5px; color: #000; }
-        .post-date { font-size: 11px; color: #888; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
         
+        .post-title { 
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+            font-size: 24px; 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+            color: #000; 
+            cursor: pointer; /* Indicates it's clickable */
+        }
+        .post-title:hover { color: #0066cc; }
+
+        .post-date { font-size: 11px; color: #888; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Summary View */
+        .post-summary p { font-size: 16px; color: #555; margin-bottom: 10px; }
+        .read-more { 
+            display: inline-block; 
+            margin-top: 10px; 
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+            font-size: 13px; 
+            font-weight: bold; 
+            color: #0066cc; 
+            cursor: pointer;
+            border: 1px solid #0066cc;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        .read-more:hover { background: #0066cc; color: white; text-decoration: none; }
+
+        /* Content Styling */
         h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 18px; margin-top: 30px; border-bottom: 2px solid #333; padding-bottom: 5px; }
         h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; margin-top: 25px; font-weight: bold; color: #444; }
         p { margin-bottom: 1.2em; text-align: left; }
+        pre { background:#f4f4f4; padding:15px; border-radius:5px; font-family: "Monaco", "Courier New", monospace; font-size:13px; overflow-x: auto; border: 1px solid #eee; border-left: 3px solid #333; }
         
-        pre { background:#f4f4f4; padding:15px; border-radius:5px; font-family: "Monaco", "Courier New", monospace; font-size:13px; overflow-x: auto; border: 1px solid #eee; }
+        /* Hidden by default */
+        .post-full { display: none; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Sidebar Widgets */
         .widget { margin-bottom: 40px; }
         .widget h3 { font-size: 11px; text-transform: uppercase; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; margin-top: 0; }
         .widget ul { list-style: none; padding: 0; margin: 0; }
@@ -79,8 +104,6 @@
             .sidebar { border-left: none; padding-left: 0; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
             .content { padding-right: 0; }
             nav { padding: 15px 20px; }
-            nav a { display: block; margin-bottom: 10px; }
-            header { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -101,12 +124,80 @@
 
     <div class="container">
         <div class="content">
+
+            <div class="post" id="post-002">
+                
+                <div class="post-title" onclick="togglePost('post-002')">Log 002: On Markov Chains</div>
+                <div class="post-date">21 December 2025</div>
+                
+                <div class="post-summary" id="post-002-summary">
+                    <p>We take a physical system $S$ which can occupy distinct states like $e_1, e_2, \dots$. The rule for movement is simple but powerful: The system has no memory.</p>
+                    <div class="read-more" onclick="togglePost('post-002')">Read Log 002 &rarr;</div>
+                </div>
+
+                <div class="post-full" id="post-002-full">
+                    
+                    <p><em>I was reading Markov Chains from the book Probability Theory: A Concise Course by Y.A. Rozanov.</em></p>
+
+                    <p><strong>1. Introduction:</strong><br>
+                    Here we take a physical system $S$ which can occupy distinct states like $e_1, e_2, \dots$. Starting from an initial state when time $t=0$, the system moves from one state to another at each tick of the clock. This collection of all possible states is called the <strong>State Space</strong>.</p>
+
+                    <p><strong>2. The Rule (No Memory):</strong><br>
+                    The rule for movement is: The system has no memory. The probability of the system occupying state $j$ at the next time step $n+1$, given the entire history of previous states $X_0$ to $X_n$, is equal to the probability dependent <em>only</em> on the current state $X_n$.
+                    $$P(X_{n+1} = j | X_0, \dots, X_n = i) = P(X_{n+1} = j | X_n = i)$$
+                    This specific kind of memoryless randomness is called the <strong>Markov Property</strong>.</p>
+
+                    <pre>
+# Python Concept:
+# The next state depends ONLY on 'current_state'.
+def get_next_state(current_state, history):
+    return random_choice(transitions[current_state])
+</pre>
+
+                    <p><strong>3. The Matrix (Data Science Application):</strong><br>
+                    In Data Science, we don't just see this as abstract math; we see it as a transition map. Imagine modeling <strong>Customer Churn</strong>. State 1 is "Subscribed" and State 2 is "Unsubscribed". The matrix $P$ holds the probabilities of a user switching between these states next month.
+                    $$\sum_{j} p_{ij} = 1$$
+                    </p>
+
+                    <pre>
+import numpy as np
+# A Churn Matrix: Row 0 (Active), Row 1 (Churned)
+P = np.array([[0.90, 0.10], [0.05, 0.95]])
+print(P.sum(axis=1)) # Output: [1. 1.]
+</pre>
+
+                    <br><hr><br>
+
+                    <h3>II. Here's where it got very interesting</h3>
+                    <p>Predicting the future... If $P$ tells us where we go in one step, can we predict where we will be in the distant future?</p>
+
+                    <p>Suppose we have already taken $n$ steps (let's say $n=2$ days). We want to know the probability of moving from state $i$ to state $j$ after <em>another</em> $m$ steps (say $m=3$ more days). The logic is simple: To get from $i$ to $j$ in total time ($n+m$), we just multiply the probability of the first leg of the trip ($n$) by the probability of the second leg ($m$).
+                    $$p_{ij}^{(n+m)} = \sum_{k} p_{ik}^{(n)} p_{kj}^{(m)}$$
+                    These are the famous <strong>Chapman-Kolmogorov Equations</strong>.</p>
+
+                    <pre>
+# Predicting 5 days into the future (n=2 + m=3)
+P_2 = np.linalg.matrix_power(P, 2)
+P_3 = np.linalg.matrix_power(P, 3)
+P_5 = np.dot(P_2, P_3)
+</pre>
+                    <br>
+                    <div class="read-more" onclick="togglePost('post-002')">&uarr; Close Log</div>
+                </div>
+            </div>
             
-            <div class="post">
-                <div class="post-title"><a href="#">Log 001: Understanding Vectors</a></div>
+            
+            <div class="post" id="post-001">
+                
+                <div class="post-title" onclick="togglePost('post-001')">Log 001: Understanding Vectors</div>
                 <div class="post-date">19 December 2025</div> 
                 
-                <div class="post-body">
+                <div class="post-summary" id="post-001-summary">
+                    <p>Vectors are elements of a vector space $V$. There can’t be a vector in isolation; there has to be a structure around it.</p>
+                    <div class="read-more" onclick="togglePost('post-001')">Read Log 001 &rarr;</div>
+                </div>
+
+                <div class="post-full" id="post-001-full">
                     <h3>I. The Theory</h3>
                     <p><em>Started with vectors, the theory.</em></p>
 
@@ -142,15 +233,10 @@
                     <p><em>Understanding vectors using Python.</em></p>
 
                     <h4>1. Vector Addition: Using NumPy</h4>
-                    <p>We use <code>numpy</code> because standard Python lists just concatenate instead of adding. 2D vectors must add up to give a new 2D vector.</p>
-
-<pre>
+                    <pre>
 import numpy as np
-
-# Defining vectors
 a = np.array([1, 2])
 b = np.array([3, 4])
-
 print(f"a + b = {a + b}")
 # Output: [4 6]
 </pre>
@@ -165,24 +251,15 @@ print(f"a + b = {a + b}")
 def plot_arrow(start, vector, color, label):
     plt.quiver(*start, *vector, angles='xy', scale_units='xy', scale=1, color=color, label=label)
 </pre>
-                    <p><em>Why those weird parameters?</em></p>
-                    <ul>
-                        <li><code>*start, *vector</code>: Unpacks the list (e.g., turns <code>[1,2]</code> into <code>1, 2</code>).</li>
-                        <li><code>angles='xy'</code>: Tells Matplotlib that the arrow directions should be based on the x,y data coordinates, not the screen pixels.</li>
-                        <li><code>scale_units='xy', scale=1</code>: <strong>Crucial.</strong> This forces a 1:1 ratio. Without this, Matplotlib autoscales arrows to look "nice," which ruins the math. We want an arrow of length 1 to actually span 1 unit on the graph.</li>
-                    </ul>
 
                     <p><strong>Step B: The Plotting</strong><br>
                     We plot the first vector ($\vec{a}$), and then—this is the trick—we plot the second vector ($\vec{b}$) <strong>starting from the tip of $\vec{a}$</strong>.</p>
 <pre>
 origin = [0, 0]
-
 # 1. The First Step (Blue)
 plot_arrow(origin, a, 'blue', 'a = [1, 2]')
-
 # 2. The Second Step (Red) - Notice the start point is 'a'
 plot_arrow(a, b, 'red', 'b = [3, 4]')
-
 # 3. The Result (Green) - From Origin to Destination
 result = a + b
 plot_arrow(origin, result, 'green', 'Result = [4, 6]')
@@ -193,49 +270,37 @@ plot_arrow(origin, result, 'green', 'Result = [4, 6]')
                     <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
                         <svg width="100%" height="auto" viewBox="0 0 500 700" style="max-width:400px; display:inline-block;">
                             <defs>
-                                <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                                    <polygon points="0 0, 10 3.5, 0 7" fill="blue" />
-                                </marker>
-                                <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                                    <polygon points="0 0, 10 3.5, 0 7" fill="red" />
-                                </marker>
-                                <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                                    <polygon points="0 0, 10 3.5, 0 7" fill="green" />
-                                </marker>
+                                <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="blue" /></marker>
+                                <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="red" /></marker>
+                                <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="green" /></marker>
                             </defs>
-                            
-                            <g stroke="#eee" stroke-width="1">
-                                <line x1="50" y1="650" x2="450" y2="650" /> <line x1="50" y1="650" x2="50" y2="50" />   </g>
-
+                            <g stroke="#eee" stroke-width="1"><line x1="50" y1="650" x2="450" y2="650" /><line x1="50" y1="650" x2="50" y2="50" /></g>
                             <line x1="50" y1="650" x2="130" y2="490" stroke="blue" stroke-width="3" marker-end="url(#arrow-blue)" />
-                            
                             <line x1="130" y1="490" x2="370" y2="170" stroke="red" stroke-width="3" marker-end="url(#arrow-red)" />
-                            
                             <line x1="50" y1="650" x2="370" y2="170" stroke="green" stroke-width="3" marker-end="url(#arrow-green)" />
-                            
                             <text x="70" y="550" fill="blue" font-family="sans-serif" font-size="14">a = [1, 2]</text>
                             <text x="250" y="320" fill="red" font-family="sans-serif" font-size="14">b = [3, 4]</text>
                             <text x="260" y="450" fill="green" font-family="sans-serif" font-size="14" font-weight="bold">Result = [4, 6]</text>
                         </svg>
                         <br><em style="font-size:12px; color:#888;">Figure 1: Visual proof that [1,2] + [3,4] lands us exactly at [4,6].</em>
                     </div>
-
-                    <p>The Green arrow (the result) points exactly to where the Red arrow ends. This visually confirms that <code>numpy</code> arrays are the true programmatic equivalent of Euclidean vectors.</p>
+                    <br>
+                    <div class="read-more" onclick="togglePost('post-001')">&uarr; Close Log</div>
                 </div>
             </div>
+
         </div>
 
         <div class="sidebar">
             <div class="widget">
                 <h3>The Editors: Abhinav Rastogi & Stuti Goyal</h3>
-                <p>We are MBA students at IIT Madras (Class of 2027) exploring the intersection of Data Science and Strategy.</p>
+                <p>We are MBA students at IIT Madras (Class of 2027) exploring Data Science and the Math behind it.</p>
             </div>
             <div class="widget">
                 <h3>Research Interests</h3>
                 <ul>
                     <li><a href="#">Linear Algebra</a></li>
                     <li><a href="#">Statistics & Regression</a></li>
-                    <li><a href="#">Organizational Dynamics</a></li>
                     <li><a href="#">Python for Data Science</a></li>
                 </ul>
             </div>
