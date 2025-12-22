@@ -131,6 +131,108 @@
     <div class="container">
         <div class="content">
 
+            <div class="post" id="post-003">
+                
+                <div class="post-title" onclick="togglePost('post-003')">Log 003: Norms & Inner Products</div>
+                <div class="post-date">18 December 2025</div>
+                
+                <div class="post-summary" id="post-003-summary">
+                    <p><strong>Topic:</strong> Norms, Inner Products, Length & Angle<br>
+                    <strong>Application:</strong> Similarity Measures & Regularization<br>
+                    <strong>The Result:</strong> Determining how "close" two data points really are.</p>
+                    <div class="read-more" onclick="togglePost('post-003')">Open Log &rarr;</div>
+                </div>
+
+                <div class="post-full" id="post-003-full">
+                    
+                    <div class="study-log">
+                        <h4 style="margin-top:0;">📝 The Study Log</h4>
+                        <ul>
+                            <li><strong>Topics:</strong> Norms, Inner Products, Length, Angle, Distance.</li>
+                            <li><strong>Sources:</strong> 
+                                <ul>
+                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
+                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Prerequisites:</strong> Vector spaces, linear mappings, basic Python.</li>
+                            <li><strong>Interesting Score:</strong> 8/10.</li>
+                            <li><strong>The Insight:</strong> Norms measure size, but Inner Products allow vectors to "talk" to each other (measure alignment).</li>
+                        </ul>
+                    </div>
+
+                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+
+                    <h4>1. Norm (Length)</h4>
+                    <p>A norm assigns a non-negative length to a vector. Formally, a norm $\|\cdot\|$ on $V$ satisfies the triangle inequality and scaling rules.</p>
+                    <p>The most familiar is the Euclidean norm:</p>
+                    <p>$$ \|\vec{v}\|_2 = \sqrt{\vec{v}^\top \vec{v}} $$</p>
+                    <p><strong>Python Awareness:</strong> Vector length is computed directly.</p>
+<pre>
+length = np.linalg.norm(v)
+</pre>
+
+                    <h4>2. Distance (Derived from Norm)</h4>
+                    <p>Once a norm exists, it defines a distance. Distance isn’t a new concept—it’s just the length of the difference vector.</p>
+                    <p>$$ d(\vec{u}, \vec{v}) = \|\vec{u} - \vec{v}\| $$</p>
+                    <p><strong>Python Awareness:</strong> Distance is the norm of the difference.</p>
+<pre>
+dist = np.linalg.norm(u - v)
+</pre>
+
+                    <h4>3. Inner Product & Angles</h4>
+                    <p>An inner product introduces geometry (angles) into a vector space. It allows us to define <strong>Orthogonality</strong>.</p>
+                    <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \|\vec{v}\|} $$</p>
+                    <p>If $\langle \vec{u}, \vec{v} \rangle = 0$, the vectors are orthogonal (perpendicular). Zero interaction means zero alignment.</p>
+                    <p><strong>Python Awareness:</strong> Inner products are dot products.</p>
+<pre>
+# Check for orthogonality (approx 0)
+is_orthogonal = np.dot(u, v) == 0
+</pre>
+
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
+                        <svg width="100%" height="250" viewBox="0 0 400 250">
+                            <circle cx="50" cy="200" r="3" fill="#333" />
+                            <text x="35" y="215" fill="#666" font-size="12">0</text>
+                            
+                            <line x1="50" y1="200" x2="250" y2="200" stroke="blue" stroke-width="3" />
+                            <text x="260" y="205" fill="blue" font-weight="bold">u</text>
+                            
+                            <line x1="50" y1="200" x2="200" y2="80" stroke="red" stroke-width="3" />
+                            <text x="190" y="70" fill="red" font-weight="bold">v</text>
+                            
+                            <line x1="250" y1="200" x2="200" y2="80" stroke="green" stroke-width="2" stroke-dasharray="5,5" />
+                            <text x="235" y="140" fill="green" font-size="12">||u - v||</text>
+                            
+                            <path d="M 90 200 A 40 40 0 0 0 82 174" stroke="#666" fill="none" />
+                            <text x="95" y="185" fill="#666" font-size="14">θ</text>
+                        </svg>
+                        <br><em style="font-size:12px; color:#888;">Figure 1: The geometry of two vectors. The green line is the distance; $\theta$ determines the inner product.</em>
+                    </div>
+
+                    <h4>4. Common Norms (Quick Contrast)</h4>
+                    <ul>
+                        <li><strong>$\ell_2$ (Euclidean):</strong> Smooth, geometric distance.</li>
+                        <li><strong>$\ell_1$ (Manhattan):</strong> Sum of absolute values ($\sum |v_i|$).</li>
+                        <li><strong>$\ell_\infty$ (Max):</strong> Maximum magnitude ($\max |v_i|$).</li>
+                    </ul>
+
+                    <hr>
+
+                    <h3>How This Connects to Data Science</h3>
+                    <p>These concepts show up quietly but everywhere in ML.</p>
+
+                    <p><strong>1. Similarity vs. Distance</strong><br>
+                    Two vectors can be close in distance but poorly aligned—or perfectly aligned but far apart.
+                    <br><em>Example:</em> Cosine similarity uses the Inner Product (ignoring magnitude), while Euclidean distance uses the Norm (sensitive to magnitude).</p>
+
+                    <p><strong>2. Regularization Intuition</strong><br>
+                    Regularization terms like $\lambda \|\vec{w}\|_2^2$ penalize large parameter norms. Geometrically, this constrains the solution to lie inside a specific shape (a ball for $\ell_2$, a diamond for $\ell_1$). This geometric constraint forces the model to be simpler.</p>
+
+                    <div class="read-more" onclick="togglePost('post-003')">&uarr; Close Log</div>
+                </div>
+            </div>
+
             <div class="post" id="post-002">
                 
                 <div class="post-title" onclick="togglePost('post-002')">Log 002: Rank, Linear Mappings & Affine Spaces</div>
@@ -233,7 +335,6 @@ y = A @ x + b
                     <div class="read-more" onclick="togglePost('post-002')">&uarr; Close Log</div>
                 </div>
             </div>
-
 
             <div class="post" id="post-001">
                 
