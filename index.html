@@ -135,55 +135,91 @@
                     <div class="read-more" onclick="togglePost('post-002')">Read Log 002 &rarr;</div>
                 </div>
 
+                <div class="post" id="post-002">
+                
+                <div class="post-title" onclick="togglePost('post-002')">Log 002: Rank, Linear Mappings & Affine Spaces</div>
+                <div class="post-date">17 December 2025</div>
+                
+                <div class="post-summary" id="post-002-summary">
+                    <p><strong>Topic:</strong> Rank, Kernels, & Affine Spaces<br>
+                    <strong>Application:</strong> Model Capacity & Bias Terms ($y = Ax + b$)<br>
+                    <strong>The Result:</strong> Understanding why real-world data rarely passes through the origin.</p>
+                    <div class="read-more" onclick="togglePost('post-002')">Open Log &rarr;</div>
+                </div>
+
                 <div class="post-full" id="post-002-full">
                     
-                    <p><em>I was reading Markov Chains from the book Probability Theory: A Concise Course by Y.A. Rozanov.</em></p>
+                    <div class="study-log">
+                        <h4 style="margin-top:0;">📝 The Study Log</h4>
+                        <ul>
+                            <li><strong>Topics:</strong> Rank, Linear Mappings, Kernel/Image, Affine Spaces.</li>
+                            <li><strong>Sources:</strong> 
+                                <ul>
+                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
+                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Prerequisites:</strong> Vector spaces, span, linear independence.</li>
+                            <li><strong>Interesting Score:</strong> 8/10.</li>
+                            <li><strong>The Insight:</strong> Information is either preserved (Rank) or lost (Kernel), never both. (The Rank-Nullity Theorem).</li>
+                        </ul>
+                    </div>
 
-                    <p><strong>1. Introduction:</strong><br>
-                    Here we take a physical system $S$ which can occupy distinct states like $e_1, e_2, \dots$. Starting from an initial state when time $t=0$, the system moves from one state to another at each tick of the clock. This collection of all possible states is called the <strong>State Space</strong>.</p>
+                    <h3>Concept Summary (With Math + Python Awareness)</h3>
 
-                    <p><strong>2. The Rule (No Memory):</strong><br>
-                    The rule for movement is: The system has no memory. The probability of the system occupying state $j$ at the next time step $n+1$, given the entire history of previous states $X_0$ to $X_n$, is equal to the probability dependent <em>only</em> on the current state $X_n$.
-                    $$P(X_{n+1} = j | X_0, \dots, X_n = i) = P(X_{n+1} = j | X_n = i)$$
-                    This specific kind of memoryless randomness is called the <strong>Markov Property</strong>.</p>
-
-                    <pre>
-# Python Concept:
-# The next state depends ONLY on 'current_state'.
-def get_next_state(current_state, history):
-    return random_choice(transitions[current_state])
+                    <h4>1. Rank</h4>
+                    <p>The rank of a matrix is the dimension of the space spanned by its columns. Rank tells us how many linearly independent directions <em>actually</em> exist in the data, regardless of how many columns the matrix has.</p>
+                    <p>$$ \text{rank}(A) = \dim(\text{Col}(A)) $$</p>
+                    <p><strong>Python Awareness:</strong> Rank measures real information, not just dimensions.</p>
+<pre>
+# If features are redundant, rank < number of columns
+real_info = np.linalg.matrix_rank(X)
 </pre>
 
-                    <p><strong>3. The Matrix (Data Science Application):</strong><br>
-                    In Data Science, we don't just see this as abstract math; we see it as a transition map. Imagine modeling <strong>Customer Churn</strong>. State 1 is "Subscribed" and State 2 is "Unsubscribed". The matrix $P$ holds the probabilities of a user switching between these states next month.
-                    $$\sum_{j} p_{ij} = 1$$
-                    </p>
-
-                    <pre>
-import numpy as np
-# A Churn Matrix: Row 0 (Active), Row 1 (Churned)
-P = np.array([[0.90, 0.10], [0.05, 0.95]])
-print(P.sum(axis=1)) # Output: [1. 1.]
+                    <h4>2. Linear Mapping ($T$)</h4>
+                    <p>A function $T: V \to W$ is linear if it preserves structure (respects addition and scaling). It does not bend or shift space; it only rotates, stretches, or shears it.</p>
+                    <p>$$ T(\vec{x}) = A\vec{x} $$</p>
+                    <p><strong>Python Awareness:</strong> Linear mappings are just matrix multiplication.</p>
+<pre>
+output = A @ x
 </pre>
 
-                    <br><hr><br>
+                    <h4>3. Kernel & Image (The Anchors)</h4>
+                    <ul>
+                        <li><strong>Kernel (Null Space):</strong> Inputs that get collapsed to zero ($\vec{x}$ where $A\vec{x} = \vec{0}$).</li>
+                        <li><strong>Image (Range):</strong> Everything the mapping can produce.</li>
+                    </ul>
+                    <p><strong>Rank-Nullity Insight:</strong> $\dim(V) = \text{rank}(T) + \dim(\ker(T))$. Information is either kept or killed.</p>
 
-                    <h3>II. Here's where it got very interesting</h3>
-                    <p>Predicting the future... If $P$ tells us where we go in one step, can we predict where we will be in the distant future?</p>
-
-                    <p>Suppose we have already taken $n$ steps (let's say $n=2$ days). We want to know the probability of moving from state $i$ to state $j$ after <em>another</em> $m$ steps (say $m=3$ more days). The logic is simple: To get from $i$ to $j$ in total time ($n+m$), we just multiply the probability of the first leg of the trip ($n$) by the probability of the second leg ($m$).
-                    $$p_{ij}^{(n+m)} = \sum_{k} p_{ik}^{(n)} p_{kj}^{(m)}$$
-                    These are the famous <strong>Chapman-Kolmogorov Equations</strong>.</p>
-
-                    <pre>
-# Predicting 5 days into the future (n=2 + m=3)
-P_2 = np.linalg.matrix_power(P, 2)
-P_3 = np.linalg.matrix_power(P, 3)
-P_5 = np.dot(P_2, P_3)
+                    <h4>4. Affine Spaces</h4>
+                    <p>An affine space is a vector space that has been <strong>shifted</strong> away from the origin.
+                    $$ \mathcal{A} = \vec{v}_0 + U $$
+                    where $U$ is a subspace and $\vec{v}_0$ is a fixed offset.</p>
+                    <p><strong>Python Awareness:</strong> Affine transformations add a shift vector.</p>
+<pre>
+# The "+ b" makes it Affine
+y = A @ x + b 
 </pre>
-                    <br><hr><br>
+
+                    <hr>
+
+                    <h3>How This Connects to Data Science</h3>
+                    <p>I’m approaching this from reading rather than experience, but these concepts explain model capacity and bias.</p>
+
+                    <p><strong>1. Rank and Model Capacity</strong><br>
+                    If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. This explains why adding more features sometimes does nothing—if they are dependent, the Rank doesn't increase, and the model doesn't learn anything new.</p>
+
+                    <p><strong>2. Linear vs. Affine Models</strong><br>
+                    A pure <strong>Linear</strong> model forces predictions to pass through the origin $(0,0)$.
+                    An <strong>Affine</strong> model allows a shift via an intercept (bias term).</p>
                     
-                    <p><em><strong>Note:</strong> I also studied Recurrent and Transient states, a bunch of theorems related to accessibility, and Limiting Probabilities. However, those proofs are dense enough to warrant their own post. I will save them for a different log some other time.</em></p>
+                    
+
+                    <ul>
+                        <li>$y = A\vec{x}$ (Linear: Must hit 0)</li>
+                        <li>$y = A\vec{x} + \vec{b}$ (Affine: Can shift)</li>
+                    </ul>
+                    <p>That small $\vec{b}$ term changes the geometry entirely, allowing the model to fit data that doesn't center at zero.</p>
 
                     <div class="read-more" onclick="togglePost('post-002')">&uarr; Close Log</div>
                 </div>
@@ -311,4 +347,5 @@ is_independent = np.linalg.matrix_rank(X) == X.shape[1]
 </div>
 </body>
 </html>
+
 
