@@ -89,6 +89,12 @@
         p { margin-bottom: 1.2em; text-align: left; }
         pre { background:#f4f4f4; padding:15px; border-radius:5px; font-family: "Monaco", "Courier New", monospace; font-size:13px; overflow-x: auto; border: 1px solid #eee; border-left: 3px solid #333; }
         
+        /* STUDY LOG META BOX */
+        .study-log { background-color: #f9f9f9; padding: 20px; border-left: 3px solid #333; margin-bottom: 30px; border-radius: 0 5px 5px 0; }
+        .study-log ul { list-style: none; padding: 0; margin: 0; font-size: 14px; color: #555; }
+        .study-log li { margin-bottom: 8px; }
+        .study-log strong { color: #333; }
+
         /* Hidden by default */
         .post-full { display: none; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -122,7 +128,10 @@
         <a href="#">Level 2</a>
     </nav>
 
-                <div class="post" id="post-002">
+    <div class="container">
+        <div class="content">
+
+            <div class="post" id="post-002">
                 
                 <div class="post-title" onclick="togglePost('post-002')">Log 002: Rank, Linear Mappings & Affine Spaces</div>
                 <div class="post-date">17 December 2025</div>
@@ -200,7 +209,20 @@ y = A @ x + b
                     A pure <strong>Linear</strong> model forces predictions to pass through the origin $(0,0)$.
                     An <strong>Affine</strong> model allows a shift via an intercept (bias term).</p>
                     
-                    
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
+                        <svg width="100%" height="250" viewBox="0 0 400 250">
+                             <g stroke="#eee" stroke-width="1">
+                                <line x1="200" y1="10" x2="200" y2="240" /> <line x1="10" y1="200" x2="390" y2="200" /> </g>
+                            
+                            <line x1="100" y1="250" x2="300" y2="150" stroke="blue" stroke-width="2" />
+                            <text x="310" y="150" fill="blue" font-size="12">Linear (y=Ax)</text>
+
+                            <line x1="100" y1="150" x2="300" y2="50" stroke="red" stroke-width="2" />
+                            <text x="310" y="50" fill="red" font-size="12">Affine (y=Ax+b)</text>
+
+                            <circle cx="200" cy="200" r="3" fill="#333" /> </svg>
+                        <br><em style="font-size:12px; color:#666;">Figure 1: Linear transformations are tethered to the origin. Affine spaces are free to move.</em>
+                    </div>
 
                     <ul>
                         <li>$y = A\vec{x}$ (Linear: Must hit 0)</li>
@@ -211,11 +233,9 @@ y = A @ x + b
                     <div class="read-more" onclick="togglePost('post-002')">&uarr; Close Log</div>
                 </div>
             </div>
-            
-            
+
+
             <div class="post" id="post-001">
-                
-                <div class="post" id="post-001">
                 
                 <div class="post-title" onclick="togglePost('post-001')">Log 001: Understanding the Basis of Data</div>
                 <div class="post-date">16 December 2025</div> 
@@ -304,13 +324,29 @@ is_independent = np.linalg.matrix_rank(X) == X.shape[1]
                         <li><strong>Machine Learning View:</strong> One feature adds <em>no new information</em>.</li>
                     </ul>
 
-                    
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
+                        <svg width="100%" height="auto" viewBox="0 0 500 200" style="max-width:400px; display:inline-block;">
+                            <defs>
+                                <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="blue" /></marker>
+                            </defs>
+                            <g stroke="#eee" stroke-width="1"><line x1="50" y1="150" x2="450" y2="150" /></g>
+                            
+                            <line x1="50" y1="150" x2="150" y2="100" stroke="blue" stroke-width="3" marker-end="url(#arrow-blue)" />
+                            <text x="100" y="100" fill="blue" font-family="sans-serif" font-size="14">v1 (Age)</text>
+                            
+                            <line x1="50" y1="150" x2="350" y2="0" stroke="red" stroke-width="1" stroke-dasharray="5,5" />
+                            <text x="360" y="20" fill="red" font-family="sans-serif" font-size="14">v2 (Redundant)</text>
+                        </svg>
+                        <br><em style="font-size:12px; color:#888;">Figure 1: Linearly Dependent vectors lie on the exact same trajectory.</em>
+                    </div>
 
                     <p>This is exactly what causes <strong>Multicollinearity</strong>—features that look different but encode the same direction, which can destabilize regression models.</p>
 
                     <div class="read-more" onclick="togglePost('post-001')">&uarr; Close Log</div>
                 </div>
             </div>
+
+        </div>
 
         <div class="sidebar">
             <div class="widget">
@@ -334,6 +370,3 @@ is_independent = np.linalg.matrix_rank(X) == X.shape[1]
 </div>
 </body>
 </html>
-
-
-
