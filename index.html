@@ -28,6 +28,20 @@
                 summary.style.display = "block";
             }
         }
+
+        // Helper to open the next post automatically when clicking "Next"
+        function openNext(nextId) {
+            var nextContent = document.getElementById(nextId + '-full');
+            var nextSummary = document.getElementById(nextId + '-summary');
+            
+            if (nextContent.style.display === "none") {
+                nextContent.style.display = "block";
+                nextSummary.style.display = "none";
+                if (window.MathJax) MathJax.typesetPromise(); 
+            }
+            // Smooth scroll to the next post
+            document.getElementById(nextId).scrollIntoView({behavior: 'smooth'});
+        }
     </script>
 
     <style>
@@ -52,7 +66,6 @@
             padding: 40px 40px 30px 40px; 
             background-color: var(--brand-color); 
             color: #ffffff; 
-            /* REMOVED THE BLACK BORDER LINE BELOW */
             border-bottom: none; 
         }
         
@@ -129,6 +142,17 @@
         }
         .read-more:hover { background: var(--brand-color); color: white; text-decoration: none; }
 
+        /* Next Link Styling */
+        .next-link {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ddd;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .next-link a { color: var(--brand-color); }
+
         /* Content Styling */
         h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 18px; margin-top: 30px; border-bottom: 2px solid #333; padding-bottom: 5px; }
         h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; margin-top: 25px; font-weight: bold; color: #444; }
@@ -187,309 +211,7 @@
                 <strong>A note to the reader:</strong> This blog is structured like a learning pipeline. We write study logs while learning the mathematics behind data models—one concept at a time. After a few logs, we write a checkpoint, where we apply those ideas to a small, hypothetical data science problem.
             </div>
 
-            <div class="post" id="post-004">
-                
-                <div class="post-title" onclick="togglePost('post-004')">Log 004: Angles, Orthogonality & Structure</div>
-                <div class="post-date">19 December 2025</div>
-                
-                <div class="post-summary" id="post-004-summary">
-                    <p><strong>Topic:</strong> Orthogonality, Bases & Complements ($U^\perp$)<br>
-                    <strong>Application:</strong> Regression Errors & Dimensionality Reduction<br>
-                    <strong>The Result:</strong> Why "Least Squares" is actually a geometry problem.</p>
-                    <div class="read-more" onclick="togglePost('post-004')">Open Log &rarr;</div>
-                </div>
-
-                <div class="post-full" id="post-004-full">
-                    
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Angles, Orthogonality, Orthogonal Bases, Orthogonal Complements.</li>
-                            <li><strong>Sources:</strong> 
-                                <ul>
-                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
-                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Prerequisites:</strong> Inner products, norms; basic Python.</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
-                            <li><strong>The Insight:</strong> Orthogonality doesn't just mean "90 degrees"—it means the vectors share no directional information (Independence).</li>
-                        </ul>
-                    </div>
-
-                    <h3>Concept Summary (With Math + Python Awareness)</h3>
-
-                    <h4>1. Angle Between Vectors</h4>
-                    <p>Once an inner product is defined, angles follow naturally. Angles measure alignment, not distance. Two vectors can be far apart but perfectly aligned.</p>
-                    <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \, \|\vec{v}\|} $$</p>
-                    <p><strong>Python Awareness:</strong> Angle comes from normalized dot product.</p>
-<pre>
-cos_theta = np.dot(u, v) / (np.linalg.norm(u) * np.linalg.norm(v))
-</pre>
-
-                    <h4>2. Orthogonality</h4>
-                    <p>Two vectors are orthogonal if their inner product is zero. This implies they are completely independent in direction.</p>
-                    <p>$$ \langle \vec{u}, \vec{v} \rangle = 0 $$</p>
-                    <p><strong>Python Awareness:</strong> Zero dot product implies orthogonality.</p>
-<pre>
-is_orthogonal = np.dot(u, v) == 0
-</pre>
-
-                    <h4>3. Orthogonal Bases & Decomposition</h4>
-                    <p>If a basis is orthogonal ($\langle \vec{v}_i, \vec{v}_j \rangle = 0$), it separates dimensions cleanly. Any vector $\vec{x}$ can be decomposed into independent pieces:</p>
-                    <p>$$ \vec{x} = \sum_i \frac{\langle \vec{x}, \vec{v}_i \rangle}{\langle \vec{v}_i, \vec{v}_i \rangle} \vec{v}_i $$</p>
-                    <p><strong>Python Awareness:</strong> Decomposition becomes a series of simple dot products.</p>
-<pre>
-coeff_i = np.dot(x, v_i) / np.dot(v_i, v_i)
-</pre>
-
-                    <h4>4. Orthogonal Complement ($U^\perp$)</h4>
-                    <p>For a subspace $U$, the complement $U^\perp$ contains all vectors orthogonal to every vector in $U$. This splits the entire space cleanly:</p>
-                    <p>$$ V = U \oplus U^\perp $$</p>
-                    <p>Every vector can be separated into a "Signal" part (in $U$) and a "Noise" part (in $U^\perp$).</p>
-
-                    <hr>
-
-                    <h3>How This Connects to Data Science</h3>
-                    <p>I kept seeing orthogonality mentioned in error analysis and dimensionality reduction.</p>
-
-                    <p><strong>Example: Error as an Orthogonal Component</strong><br>
-                    In Least Squares regression, we try to approximate a target vector $\vec{y}$ using our feature space (Col($X$)). The "Error" vector is simply the part of $\vec{y}$ that lives in the Orthogonal Complement.</p>
-                    
-                    <p>If the error <em>weren't</em> orthogonal, it would mean there is still some "direction" left in the features that explains the target, and we could reduce the error further.</p>
-                    
-                    
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:20px; background:white;">
-                        <svg width="100%" height="250" viewBox="0 0 400 250">
-                            <polygon points="50,200 150,230 350,180 250,150" fill="#eef" stroke="#99a" />
-                            <text x="300" y="170" fill="#77a">Subspace U</text>
-
-                            <line x1="150" y1="230" x2="150" y2="50" stroke="#333" stroke-width="2" />
-                            <text x="140" y="45" fill="#333" font-weight="bold">y (Target)</text>
-
-                            <line x1="150" y1="230" x2="250" y2="190" stroke="blue" stroke-width="3" />
-                            <text x="260" y="200" fill="blue" font-weight="bold">ŷ (Prediction)</text>
-
-                            <line x1="250" y1="190" x2="150" y2="50" stroke="red" stroke-width="2" stroke-dasharray="5,5" />
-                            <text x="210" y="110" fill="red">e (Error)</text>
-
-                            <polyline points="240,194 236,184 246,180" fill="none" stroke="#666" stroke-width="1"/>
-                        </svg>
-                        <br><em style="font-size:12px; color:#888;">Figure 1: The error vector (red) is orthogonal to the prediction space (blue). This is the geometric definition of "Best Fit."</em>
-                    </div>
-
-                    <div class="read-more" onclick="togglePost('post-004')">&uarr; Close Log</div>
-                </div>
-            </div>
-
-
-            <div class="post" id="post-003">
-                
-                <div class="post-title" onclick="togglePost('post-003')">Log 003: Norms & Inner Products</div>
-                <div class="post-date">18 December 2025</div>
-                
-                <div class="post-summary" id="post-003-summary">
-                    <p><strong>Topic:</strong> Norms, Inner Products, Length & Angle<br>
-                    <strong>Application:</strong> Similarity Measures & Regularization<br>
-                    <strong>The Result:</strong> Determining how "close" two data points really are.</p>
-                    <div class="read-more" onclick="togglePost('post-003')">Open Log &rarr;</div>
-                </div>
-
-                <div class="post-full" id="post-003-full">
-                    
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Norms, Inner Products, Length, Angle, Distance.</li>
-                            <li><strong>Sources:</strong> 
-                                <ul>
-                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
-                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Prerequisites:</strong> Vector spaces, linear mappings, basic Python.</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
-                            <li><strong>The Insight:</strong> Norms measure size, but Inner Products allow vectors to "talk" to each other (measure alignment).</li>
-                        </ul>
-                    </div>
-
-                    <h3>Concept Summary (With Math + Python Awareness)</h3>
-
-                    <h4>1. Norm (Length)</h4>
-                    <p>A norm assigns a non-negative length to a vector. Formally, a norm $\|\cdot\|$ on $V$ satisfies the triangle inequality and scaling rules.</p>
-                    <p>The most familiar is the Euclidean norm:</p>
-                    <p>$$ \|\vec{v}\|_2 = \sqrt{\vec{v}^\top \vec{v}} $$</p>
-                    <p><strong>Python Awareness:</strong> Vector length is computed directly.</p>
-<pre>
-length = np.linalg.norm(v)
-</pre>
-
-                    <h4>2. Distance (Derived from Norm)</h4>
-                    <p>Once a norm exists, it defines a distance. Distance isn’t a new concept—it’s just the length of the difference vector.</p>
-                    <p>$$ d(\vec{u}, \vec{v}) = \|\vec{u} - \vec{v}\| $$</p>
-                    <p><strong>Python Awareness:</strong> Distance is the norm of the difference.</p>
-<pre>
-dist = np.linalg.norm(u - v)
-</pre>
-
-                    <h4>3. Inner Product & Angles</h4>
-                    <p>An inner product introduces geometry (angles) into a vector space. It allows us to define <strong>Orthogonality</strong>.</p>
-                    <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \|\vec{v}\|} $$</p>
-                    <p>If $\langle \vec{u}, \vec{v} \rangle = 0$, the vectors are orthogonal (perpendicular). Zero interaction means zero alignment.</p>
-                    <p><strong>Python Awareness:</strong> Inner products are dot products.</p>
-<pre>
-# Check for orthogonality (approx 0)
-is_orthogonal = np.dot(u, v) == 0
-</pre>
-
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="250" viewBox="0 0 400 250">
-                            <circle cx="50" cy="200" r="3" fill="#333" />
-                            <text x="35" y="215" fill="#666" font-size="12">0</text>
-                            
-                            <line x1="50" y1="200" x2="250" y2="200" stroke="blue" stroke-width="3" />
-                            <text x="260" y="205" fill="blue" font-weight="bold">u</text>
-                            
-                            <line x1="50" y1="200" x2="200" y2="80" stroke="red" stroke-width="3" />
-                            <text x="190" y="70" fill="red" font-weight="bold">v</text>
-                            
-                            <line x1="250" y1="200" x2="200" y2="80" stroke="green" stroke-width="2" stroke-dasharray="5,5" />
-                            <text x="235" y="140" fill="green" font-size="12">||u - v||</text>
-                            
-                            <path d="M 90 200 A 40 40 0 0 0 82 174" stroke="#666" fill="none" />
-                            <text x="95" y="185" fill="#666" font-size="14">θ</text>
-                        </svg>
-                        <br><em style="font-size:12px; color:#888;">Figure 1: The geometry of two vectors. The green line is the distance; $\theta$ determines the inner product.</em>
-                    </div>
-
-                    <h4>4. Common Norms (Quick Contrast)</h4>
-                    <ul>
-                        <li><strong>$\ell_2$ (Euclidean):</strong> Smooth, geometric distance.</li>
-                        <li><strong>$\ell_1$ (Manhattan):</strong> Sum of absolute values ($\sum |v_i|$).</li>
-                        <li><strong>$\ell_\infty$ (Max):</strong> Maximum magnitude ($\max |v_i|$).</li>
-                    </ul>
-
-                    <hr>
-
-                    <h3>How This Connects to Data Science</h3>
-                    <p>These concepts show up quietly but everywhere in ML.</p>
-
-                    <p><strong>1. Similarity vs. Distance</strong><br>
-                    Two vectors can be close in distance but poorly aligned—or perfectly aligned but far apart.
-                    <br><em>Example:</em> Cosine similarity uses the Inner Product (ignoring magnitude), while Euclidean distance uses the Norm (sensitive to magnitude).</p>
-
-                    <p><strong>2. Regularization Intuition</strong><br>
-                    Regularization terms like $\lambda \|\vec{w}\|_2^2$ penalize large parameter norms. Geometrically, this constrains the solution to lie inside a specific shape (a ball for $\ell_2$, a diamond for $\ell_1$). This geometric constraint forces the model to be simpler.</p>
-
-                    <div class="read-more" onclick="togglePost('post-003')">&uarr; Close Log</div>
-                </div>
-            </div>
-
-            <div class="post" id="post-002">
-                
-                <div class="post-title" onclick="togglePost('post-002')">Log 002: Rank, Linear Mappings & Affine Spaces</div>
-                <div class="post-date">17 December 2025</div>
-                
-                <div class="post-summary" id="post-002-summary">
-                    <p><strong>Topic:</strong> Rank, Kernels, & Affine Spaces<br>
-                    <strong>Application:</strong> Model Capacity & Bias Terms ($y = Ax + b$)<br>
-                    <strong>The Result:</strong> Understanding why real-world data rarely passes through the origin.</p>
-                    <div class="read-more" onclick="togglePost('post-002')">Open Log &rarr;</div>
-                </div>
-
-                <div class="post-full" id="post-002-full">
-                    
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Rank, Linear Mappings, Kernel/Image, Affine Spaces.</li>
-                            <li><strong>Sources:</strong> 
-                                <ul>
-                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
-                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Prerequisites:</strong> Vector spaces, span, linear independence.</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
-                            <li><strong>The Insight:</strong> Information is either preserved (Rank) or lost (Kernel), never both. (The Rank-Nullity Theorem).</li>
-                        </ul>
-                    </div>
-
-                    <h3>Concept Summary (With Math + Python Awareness)</h3>
-
-                    <h4>1. Rank</h4>
-                    <p>The rank of a matrix is the dimension of the space spanned by its columns. Rank tells us how many linearly independent directions <em>actually</em> exist in the data, regardless of how many columns the matrix has.</p>
-                    <p>$$ \text{rank}(A) = \dim(\text{Col}(A)) $$</p>
-                    <p><strong>Python Awareness:</strong> Rank measures real information, not just dimensions.</p>
-<pre>
-# If features are redundant, rank < number of columns
-real_info = np.linalg.matrix_rank(X)
-</pre>
-
-                    <h4>2. Linear Mapping ($T$)</h4>
-                    <p>A function $T: V \to W$ is linear if it preserves structure (respects addition and scaling). It does not bend or shift space; it only rotates, stretches, or shears it.</p>
-                    <p>$$ T(\vec{x}) = A\vec{x} $$</p>
-                    <p><strong>Python Awareness:</strong> Linear mappings are just matrix multiplication.</p>
-<pre>
-output = A @ x
-</pre>
-
-                    <h4>3. Kernel & Image (The Anchors)</h4>
-                    <ul>
-                        <li><strong>Kernel (Null Space):</strong> Inputs that get collapsed to zero ($\vec{x}$ where $A\vec{x} = \vec{0}$).</li>
-                        <li><strong>Image (Range):</strong> Everything the mapping can produce.</li>
-                    </ul>
-                    <p><strong>Rank-Nullity Insight:</strong> $\dim(V) = \text{rank}(T) + \dim(\ker(T))$. Information is either kept or killed.</p>
-
-                    <h4>4. Affine Spaces</h4>
-                    <p>An affine space is a vector space that has been <strong>shifted</strong> away from the origin.
-                    $$ \mathcal{A} = \vec{v}_0 + U $$
-                    where $U$ is a subspace and $\vec{v}_0$ is a fixed offset.</p>
-                    <p><strong>Python Awareness:</strong> Affine transformations add a shift vector.</p>
-<pre>
-# The "+ b" makes it Affine
-y = A @ x + b 
-</pre>
-
-                    <hr>
-
-                    <h3>How This Connects to Data Science</h3>
-                    <p>I’m approaching this from reading rather than experience, but these concepts explain model capacity and bias.</p>
-
-                    <p><strong>1. Rank and Model Capacity</strong><br>
-                    If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. This explains why adding more features sometimes does nothing—if they are dependent, the Rank doesn't increase, and the model doesn't learn anything new.</p>
-
-                    <p><strong>2. Linear vs. Affine Models</strong><br>
-                    A pure <strong>Linear</strong> model forces predictions to pass through the origin $(0,0)$.
-                    An <strong>Affine</strong> model allows a shift via an intercept (bias term).</p>
-                    
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="250" viewBox="0 0 400 250">
-                             <g stroke="#eee" stroke-width="1">
-                                <line x1="200" y1="10" x2="200" y2="240" /> <line x1="10" y1="200" x2="390" y2="200" /> </g>
-                            
-                            <line x1="100" y1="250" x2="300" y2="150" stroke="blue" stroke-width="2" />
-                            <text x="310" y="150" fill="blue" font-size="12">Linear (y=Ax)</text>
-
-                            <line x1="100" y1="150" x2="300" y2="50" stroke="red" stroke-width="2" />
-                            <text x="310" y="50" fill="red" font-size="12">Affine (y=Ax+b)</text>
-
-                            <circle cx="200" cy="200" r="3" fill="#333" /> </svg>
-                        <br><em style="font-size:12px; color:#666;">Figure 1: Linear transformations are tethered to the origin. Affine spaces are free to move.</em>
-                    </div>
-
-                    <ul>
-                        <li>$y = A\vec{x}$ (Linear: Must hit 0)</li>
-                        <li>$y = A\vec{x} + \vec{b}$ (Affine: Can shift)</li>
-                    </ul>
-                    <p>That small $\vec{b}$ term changes the geometry entirely, allowing the model to fit data that doesn't center at zero.</p>
-
-                    <div class="read-more" onclick="togglePost('post-002')">&uarr; Close Log</div>
-                </div>
-            </div>
-
             <div class="post" id="post-001">
-                
                 <div class="post-title" onclick="togglePost('post-001')">Log 001: Understanding the Basis of Data</div>
                 <div class="post-date">16 December 2025</div> 
                 
@@ -501,7 +223,6 @@ y = A @ x + b
                 </div>
 
                 <div class="post-full" id="post-001-full">
-                    
                     <div class="study-log">
                         <h4 style="margin-top:0;">📝 The Study Log</h4>
                         <ul>
@@ -519,14 +240,13 @@ y = A @ x + b
                     </div>
 
                     <h3>Concept Summary (With Math + Python Awareness)</h3>
-                    
                     <h4>1. Vector Space</h4>
                     <p>A vector space $V$ over a field $\mathbb{F}$ is a set where vector addition and scalar multiplication are defined and satisfy specific axioms. Formally, for all $\vec{u}, \vec{v} \in V$ and $\alpha \in \mathbb{F}$:</p>
                     <p>$$ \vec{u} + \vec{v} \in V \quad \text{and} \quad \alpha \vec{v} \in V $$</p>
                     <p><strong>Python Awareness:</strong> Vector spaces show up as arrays supporting addition and scaling.</p>
 <pre>
 v = np.array([1, 2, 3])
-# Result remains in the same "space" (array of size 3)
+# Result remains in the same "space"
 result = 2 * v + v  
 </pre>
 
@@ -537,7 +257,6 @@ result = 2 * v + v
                         <li>If $\vec{u}, \vec{v} \in U$, then $\vec{u} + \vec{v} \in U$ (Closed under addition).</li>
                         <li>If $\vec{v} \in U$ and $\alpha \in \mathbb{F}$, then $\alpha \vec{v} \in U$ (Closed under scaling).</li>
                     </ol>
-                    <p><strong>Python Awareness:</strong> Subspaces appear when linear combinations ($a \cdot u + b \cdot v$) stay within the same space.</p>
 
                     <h4>3. Span</h4>
                     <p>Given vectors $\vec{v}_1, \dots, \vec{v}_n$, their span is the set of all reachable vectors:</p>
@@ -545,7 +264,6 @@ result = 2 * v + v
                     <p>I’m starting to think of span as the <strong>boundary of possibility</strong>—anything outside it is unreachable without new vectors.</p>
                     <p><strong>Python Awareness:</strong> Span corresponds to the column space of a matrix.</p>
 <pre>
-# Checking the rank (dimension of the span)
 rank = np.linalg.matrix_rank(X)
 </pre>
 
@@ -553,16 +271,11 @@ rank = np.linalg.matrix_rank(X)
                     <p>A set of vectors is linearly independent if the only way to sum them to zero is by setting all coefficients to zero:</p>
                     <p>$$ \sum \alpha_i \vec{v}_i = \vec{0} \implies \alpha_1 = \dots = \alpha_n = 0 $$</p>
                     <p><strong>Reframed:</strong> If one vector can be built from the others, it isn’t adding a new direction. Independent vectors expand the span; dependent ones don’t.</p>
-                    <p><strong>Python Awareness:</strong> Independence shows up as full column rank.</p>
-<pre>
-# If True, columns are independent
-is_independent = np.linalg.matrix_rank(X) == X.shape[1]
-</pre>
 
                     <hr>
 
                     <h3>How This Connects to Data Science</h3>
-                    <p>I’m not a data scientist, but while reading about regression and feature engineering, these ideas kept showing up—especially around <strong>multicollinearity</strong>. Once I learned that features are treated as vectors, the connection became clear.</p>
+                    <p>I’m not a data scientist, but while reading about regression and feature engineering, these ideas kept showing up—especially around <strong>multicollinearity</strong>.</p>
 
                     <p><strong>Example: Redundant Features</strong><br>
                     Imagine a dataset with two columns:</p>
@@ -595,7 +308,268 @@ is_independent = np.linalg.matrix_rank(X) == X.shape[1]
 
                     <p>This is exactly what causes <strong>Multicollinearity</strong>—features that look different but encode the same direction, which can destabilize regression models.</p>
 
+                    <div class="next-link">
+                        Next: <a onclick="openNext('post-002')">Log 002 &rarr; Rank, Linear Mappings & Affine Spaces</a>
+                    </div>
+
                     <div class="read-more" onclick="togglePost('post-001')">&uarr; Close Log</div>
+                </div>
+            </div>
+
+            <div class="post" id="post-002">
+                <div class="post-title" onclick="togglePost('post-002')">Log 002: Rank, Linear Mappings & Affine Spaces</div>
+                <div class="post-date">17 December 2025</div>
+                
+                <div class="post-summary" id="post-002-summary">
+                    <p><strong>Topic:</strong> Rank, Kernels, & Affine Spaces<br>
+                    <strong>Application:</strong> Model Capacity & Bias Terms ($y = Ax + b$)<br>
+                    <strong>The Result:</strong> Understanding why real-world data rarely passes through the origin.</p>
+                    <div class="read-more" onclick="togglePost('post-002')">Open Log &rarr;</div>
+                </div>
+
+                <div class="post-full" id="post-002-full">
+                    <div class="study-log">
+                        <h4 style="margin-top:0;">📝 The Study Log</h4>
+                        <ul>
+                            <li><strong>Topics:</strong> Rank, Linear Mappings, Kernel/Image, Affine Spaces.</li>
+                            <li><strong>Sources:</strong> 
+                                <ul>
+                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
+                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Prerequisites:</strong> Vector spaces, span, linear independence.</li>
+                            <li><strong>Interesting Score:</strong> 8/10.</li>
+                            <li><strong>The Insight:</strong> Information is either preserved (Rank) or lost (Kernel), never both. (The Rank-Nullity Theorem).</li>
+                        </ul>
+                    </div>
+
+                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+                    <h4>1. Rank</h4>
+                    <p>The rank of a matrix is the dimension of the space spanned by its columns. Rank tells us how many linearly independent directions <em>actually</em> exist in the data.</p>
+                    <p>$$ \text{rank}(A) = \dim(\text{Col}(A)) $$</p>
+                    <p><strong>Python Awareness:</strong> Rank measures real information, not just dimensions.</p>
+<pre>
+real_info = np.linalg.matrix_rank(X)
+</pre>
+
+                    <h4>2. Linear Mapping ($T$)</h4>
+                    <p>A function $T: V \to W$ is linear if it preserves structure (respects addition and scaling). It does not bend or shift space.</p>
+                    <p>$$ T(\vec{x}) = A\vec{x} $$</p>
+
+                    <h4>3. Kernel & Image (The Anchors)</h4>
+                    <ul>
+                        <li><strong>Kernel (Null Space):</strong> Inputs that get collapsed to zero ($\vec{x}$ where $A\vec{x} = \vec{0}$).</li>
+                        <li><strong>Image (Range):</strong> Everything the mapping can produce.</li>
+                    </ul>
+
+                    <h4>4. Affine Spaces</h4>
+                    <p>An affine space is a vector space that has been <strong>shifted</strong> away from the origin.
+                    $$ \mathcal{A} = \vec{v}_0 + U $$
+                    where $U$ is a subspace and $\vec{v}_0$ is a fixed offset.</p>
+                    <p><strong>Python Awareness:</strong> Affine transformations add a shift vector.</p>
+<pre>
+# The "+ b" makes it Affine
+y = A @ x + b 
+</pre>
+
+                    <hr>
+
+                    <h3>How This Connects to Data Science</h3>
+                    <p>I’m approaching this from reading rather than experience, but these concepts explain model capacity and bias.</p>
+
+                    <p><strong>1. Rank and Model Capacity</strong><br>
+                    If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. This explains why adding more features sometimes does nothing.</p>
+
+                    <p><strong>2. Linear vs. Affine Models</strong><br>
+                    A pure <strong>Linear</strong> model forces predictions to pass through the origin $(0,0)$.
+                    An <strong>Affine</strong> model allows a shift via an intercept (bias term).</p>
+                    
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
+                        <svg width="100%" height="250" viewBox="0 0 400 250">
+                             <g stroke="#eee" stroke-width="1">
+                                <line x1="200" y1="10" x2="200" y2="240" /> <line x1="10" y1="200" x2="390" y2="200" /> </g>
+                            
+                            <line x1="100" y1="250" x2="300" y2="150" stroke="blue" stroke-width="2" />
+                            <text x="310" y="150" fill="blue" font-size="12">Linear (y=Ax)</text>
+
+                            <line x1="100" y1="150" x2="300" y2="50" stroke="red" stroke-width="2" />
+                            <text x="310" y="50" fill="red" font-size="12">Affine (y=Ax+b)</text>
+
+                            <circle cx="200" cy="200" r="3" fill="#333" /> </svg>
+                        <br><em style="font-size:12px; color:#666;">Figure 1: Linear transformations are tethered to the origin. Affine spaces are free to move.</em>
+                    </div>
+
+                    <div class="next-link">
+                        Next: <a onclick="openNext('post-003')">Log 003 &rarr; Norms & Inner Products</a>
+                    </div>
+
+                    <div class="read-more" onclick="togglePost('post-002')">&uarr; Close Log</div>
+                </div>
+            </div>
+
+            <div class="post" id="post-003">
+                <div class="post-title" onclick="togglePost('post-003')">Log 003: Norms & Inner Products</div>
+                <div class="post-date">18 December 2025</div>
+                
+                <div class="post-summary" id="post-003-summary">
+                    <p><strong>Topic:</strong> Norms, Inner Products, Length & Angle<br>
+                    <strong>Application:</strong> Similarity Measures & Regularization<br>
+                    <strong>The Result:</strong> Determining how "close" two data points really are.</p>
+                    <div class="read-more" onclick="togglePost('post-003')">Open Log &rarr;</div>
+                </div>
+
+                <div class="post-full" id="post-003-full">
+                    <div class="study-log">
+                        <h4 style="margin-top:0;">📝 The Study Log</h4>
+                        <ul>
+                            <li><strong>Topics:</strong> Norms, Inner Products, Length, Angle, Distance.</li>
+                            <li><strong>Sources:</strong> 
+                                <ul>
+                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
+                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Prerequisites:</strong> Vector spaces, linear mappings, basic Python.</li>
+                            <li><strong>Interesting Score:</strong> 8/10.</li>
+                            <li><strong>The Insight:</strong> Norms measure size, but Inner Products allow vectors to "talk" to each other (measure alignment).</li>
+                        </ul>
+                    </div>
+
+                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+                    <h4>1. Norm (Length)</h4>
+                    <p>A norm assigns a non-negative length to a vector. The most familiar is the Euclidean norm:</p>
+                    <p>$$ \|\vec{v}\|_2 = \sqrt{\vec{v}^\top \vec{v}} $$</p>
+
+                    <h4>2. Distance (Derived from Norm)</h4>
+                    <p>Once a norm exists, it defines a distance. Distance is just the length of the difference vector.</p>
+                    <p>$$ d(\vec{u}, \vec{v}) = \|\vec{u} - \vec{v}\| $$</p>
+
+                    <h4>3. Inner Product & Angles</h4>
+                    <p>An inner product introduces geometry (angles) into a vector space.</p>
+                    <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \|\vec{v}\|} $$</p>
+                    <p>If $\langle \vec{u}, \vec{v} \rangle = 0$, the vectors are orthogonal (perpendicular).</p>
+                    <p><strong>Python Awareness:</strong> Inner products are dot products.</p>
+<pre>
+is_orthogonal = np.dot(u, v) == 0
+</pre>
+
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
+                        <svg width="100%" height="250" viewBox="0 0 400 250">
+                            <circle cx="50" cy="200" r="3" fill="#333" />
+                            <text x="35" y="215" fill="#666" font-size="12">0</text>
+                            
+                            <line x1="50" y1="200" x2="250" y2="200" stroke="blue" stroke-width="3" />
+                            <text x="260" y="205" fill="blue" font-weight="bold">u</text>
+                            
+                            <line x1="50" y1="200" x2="200" y2="80" stroke="red" stroke-width="3" />
+                            <text x="190" y="70" fill="red" font-weight="bold">v</text>
+                            
+                            <line x1="250" y1="200" x2="200" y2="80" stroke="green" stroke-width="2" stroke-dasharray="5,5" />
+                            <text x="235" y="140" fill="green" font-size="12">||u - v||</text>
+                            
+                            <path d="M 90 200 A 40 40 0 0 0 82 174" stroke="#666" fill="none" />
+                            <text x="95" y="185" fill="#666" font-size="14">θ</text>
+                        </svg>
+                        <br><em style="font-size:12px; color:#888;">Figure 1: The geometry of two vectors. The green line is the distance; $\theta$ determines the inner product.</em>
+                    </div>
+
+                    <hr>
+
+                    <h3>How This Connects to Data Science</h3>
+                    <p><strong>1. Similarity vs. Distance</strong><br>
+                    Cosine similarity uses the Inner Product (ignoring magnitude), while Euclidean distance uses the Norm (sensitive to magnitude).</p>
+
+                    <p><strong>2. Regularization Intuition</strong><br>
+                    Regularization terms like $\lambda \|\vec{w}\|_2^2$ penalize large parameter norms. Geometrically, this constrains the solution to lie inside a specific shape.</p>
+
+                    <div class="next-link">
+                        Next: <a onclick="openNext('post-004')">Log 004 &rarr; Angles, Orthogonality & Structure</a>
+                    </div>
+
+                    <div class="read-more" onclick="togglePost('post-003')">&uarr; Close Log</div>
+                </div>
+            </div>
+
+            <div class="post" id="post-004">
+                <div class="post-title" onclick="togglePost('post-004')">Log 004: Angles, Orthogonality & Structure</div>
+                <div class="post-date">19 December 2025</div>
+                
+                <div class="post-summary" id="post-004-summary">
+                    <p><strong>Topic:</strong> Orthogonality, Bases & Complements ($U^\perp$)<br>
+                    <strong>Application:</strong> Regression Errors & Dimensionality Reduction<br>
+                    <strong>The Result:</strong> Why "Least Squares" is actually a geometry problem.</p>
+                    <div class="read-more" onclick="togglePost('post-004')">Open Log &rarr;</div>
+                </div>
+
+                <div class="post-full" id="post-004-full">
+                    <div class="study-log">
+                        <h4 style="margin-top:0;">📝 The Study Log</h4>
+                        <ul>
+                            <li><strong>Topics:</strong> Angles, Orthogonality, Orthogonal Bases, Orthogonal Complements.</li>
+                            <li><strong>Sources:</strong> 
+                                <ul>
+                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
+                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Prerequisites:</strong> Inner products, norms; basic Python.</li>
+                            <li><strong>Interesting Score:</strong> 8/10.</li>
+                            <li><strong>The Insight:</strong> Orthogonality doesn't just mean "90 degrees"—it means the vectors share no directional information (Independence).</li>
+                        </ul>
+                    </div>
+
+                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+                    <h4>1. Angle Between Vectors</h4>
+                    <p>Once an inner product is defined, angles follow naturally. Angles measure alignment, not distance.</p>
+                    <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \, \|\vec{v}\|} $$</p>
+
+                    <h4>2. Orthogonality</h4>
+                    <p>Two vectors are orthogonal if their inner product is zero. This implies they are completely independent in direction.</p>
+                    <p>$$ \langle \vec{u}, \vec{v} \rangle = 0 $$</p>
+                    <p><strong>Python Awareness:</strong> Zero dot product implies orthogonality.</p>
+<pre>
+is_orthogonal = np.dot(u, v) == 0
+</pre>
+
+                    <h4>3. Orthogonal Bases & Decomposition</h4>
+                    <p>If a basis is orthogonal, it separates dimensions cleanly. Any vector $\vec{x}$ can be decomposed into independent pieces:</p>
+                    <p>$$ \vec{x} = \sum_i \frac{\langle \vec{x}, \vec{v}_i \rangle}{\langle \vec{v}_i, \vec{v}_i \rangle} \vec{v}_i $$</p>
+
+                    <h4>4. Orthogonal Complement ($U^\perp$)</h4>
+                    <p>For a subspace $U$, the complement $U^\perp$ contains all vectors orthogonal to every vector in $U$. This splits the entire space cleanly:</p>
+                    <p>$$ V = U \oplus U^\perp $$</p>
+
+                    <hr>
+
+                    <h3>How This Connects to Data Science</h3>
+                    <p>I kept seeing orthogonality mentioned in error analysis and dimensionality reduction.</p>
+
+                    <p><strong>Example: Error as an Orthogonal Component</strong><br>
+                    In Least Squares regression, we try to approximate a target vector $\vec{y}$ using our feature space (Col($X$)). The "Error" vector is simply the part of $\vec{y}$ that lives in the Orthogonal Complement.</p>
+                    
+                    <p>If the error <em>weren't</em> orthogonal, it would mean there is still some "direction" left in the features that explains the target, and we could reduce the error further.</p>
+                    
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:20px; background:white;">
+                        <svg width="100%" height="250" viewBox="0 0 400 250">
+                            <polygon points="50,200 150,230 350,180 250,150" fill="#eef" stroke="#99a" />
+                            <text x="300" y="170" fill="#77a">Subspace U</text>
+
+                            <line x1="150" y1="230" x2="150" y2="50" stroke="#333" stroke-width="2" />
+                            <text x="140" y="45" fill="#333" font-weight="bold">y (Target)</text>
+
+                            <line x1="150" y1="230" x2="250" y2="190" stroke="blue" stroke-width="3" />
+                            <text x="260" y="200" fill="blue" font-weight="bold">ŷ (Prediction)</text>
+
+                            <line x1="250" y1="190" x2="150" y2="50" stroke="red" stroke-width="2" stroke-dasharray="5,5" />
+                            <text x="210" y="110" fill="red">e (Error)</text>
+
+                            <polyline points="240,194 236,184 246,180" fill="none" stroke="#666" stroke-width="1"/>
+                        </svg>
+                        <br><em style="font-size:12px; color:#888;">Figure 1: The error vector (red) is orthogonal to the prediction space (blue). This is the geometric definition of "Best Fit."</em>
+                    </div>
+
+                    <div class="read-more" onclick="togglePost('post-004')">&uarr; Close Log</div>
                 </div>
             </div>
 
