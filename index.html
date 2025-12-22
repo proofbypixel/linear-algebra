@@ -192,107 +192,102 @@ P_5 = np.dot(P_2, P_3)
             
             <div class="post" id="post-001">
                 
-                <div class="post-title" onclick="togglePost('post-001')">Log 001: Understanding Vectors</div>
-                <div class="post-date">19 December 2025</div> 
+                <div class="post" id="post-001">
+                
+                <div class="post-title" onclick="togglePost('post-001')">Log 001: Understanding the Basis of Data</div>
+                <div class="post-date">16 December 2025</div> 
                 
                 <div class="post-summary" id="post-001-summary">
-                    <p>Vectors are elements of a vector space $V$. There can’t be a vector in isolation; there has to be a structure around it.</p>
-                    <div class="read-more" onclick="togglePost('post-001')">Read Log 001 &rarr;</div>
+                    <p><strong>Topic:</strong> Vector Spaces, Span & Linear Independence<br>
+                    <strong>Application:</strong> Feature Engineering (Multicollinearity)<br>
+                    <strong>The Result:</strong> Using math to identify redundant data features.</p>
+                    <div class="read-more" onclick="togglePost('post-001')">Open Log &rarr;</div>
                 </div>
 
                 <div class="post-full" id="post-001-full">
-                    <h3>I. The Theory</h3>
-                    <p><em>Started with vectors, the theory.</em></p>
+                    
+                    <div class="study-log">
+                        <h4 style="margin-top:0;">📝 The Study Log</h4>
+                        <ul>
+                            <li><strong>Topics:</strong> Vector Spaces, Subspaces, Span, Linear Independence.</li>
+                            <li><strong>Sources:</strong> 
+                                <ul>
+                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
+                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Prerequisites:</strong> High school mathematics, basic Python.</li>
+                            <li><strong>Interesting Score:</strong> 7/10.</li>
+                            <li><strong>The Insight:</strong> As long as adding and scaling vectors doesn’t push you outside the set, you’re in a vector space.</li>
+                        </ul>
+                    </div>
 
-                    <p><strong>1. Pretty abstract to start with:</strong><br>
-                    Vectors are elements of a vector space $V$. There can’t be a vector in isolation; there has to be a structure around it.</p>
+                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+                    
+                    <h4>1. Vector Space</h4>
+                    <p>A vector space $V$ over a field $\mathbb{F}$ is a set where vector addition and scalar multiplication are defined and satisfy specific axioms. Formally, for all $\vec{u}, \vec{v} \in V$ and $\alpha \in \mathbb{F}$:</p>
+                    <p>$$ \vec{u} + \vec{v} \in V \quad \text{and} \quad \alpha \vec{v} \in V $$</p>
+                    <p><strong>Python Awareness:</strong> Vector spaces show up as arrays supporting addition and scaling.</p>
+<pre>
+v = np.array([1, 2, 3])
+# Result remains in the same "space" (array of size 3)
+result = 2 * v + v  
+</pre>
 
-                    <p><strong>2. What is a vector space?</strong><br>
-                    A Vector Space is a set $V$ combined with a Field $\mathbb{F}$ (usually real numbers, $\mathbb{R}$) equipped with two fundamental operations:</p>
+                    <h4>2. Subspace</h4>
+                    <p>A subspace $U \subseteq V$ is a subset that is itself a vector space. Instead of checking all axioms, we verify three conditions:</p>
+                    <ol>
+                        <li>$\vec{0} \in U$ (Contains the zero vector).</li>
+                        <li>If $\vec{u}, \vec{v} \in U$, then $\vec{u} + \vec{v} \in U$ (Closed under addition).</li>
+                        <li>If $\vec{v} \in U$ and $\alpha \in \mathbb{F}$, then $\alpha \vec{v} \in U$ (Closed under scaling).</li>
+                    </ol>
+                    <p><strong>Python Awareness:</strong> Subspaces appear when linear combinations ($a \cdot u + b \cdot v$) stay within the same space.</p>
+
+                    <h4>3. Span</h4>
+                    <p>Given vectors $\vec{v}_1, \dots, \vec{v}_n$, their span is the set of all reachable vectors:</p>
+                    <p>$$ \text{span}(\vec{v}_1, \dots, \vec{v}_n) = \{ \sum_{i=1}^{n} \alpha_i \vec{v}_i \mid \alpha_i \in \mathbb{F} \} $$</p>
+                    <p>I’m starting to think of span as the <strong>boundary of possibility</strong>—anything outside it is unreachable without new vectors.</p>
+                    <p><strong>Python Awareness:</strong> Span corresponds to the column space of a matrix.</p>
+<pre>
+# Checking the rank (dimension of the span)
+rank = np.linalg.matrix_rank(X)
+</pre>
+
+                    <h4>4. Linear Independence</h4>
+                    <p>A set of vectors is linearly independent if the only way to sum them to zero is by setting all coefficients to zero:</p>
+                    <p>$$ \sum \alpha_i \vec{v}_i = \vec{0} \implies \alpha_1 = \dots = \alpha_n = 0 $$</p>
+                    <p><strong>Reframed:</strong> If one vector can be built from the others, it isn’t adding a new direction. Independent vectors expand the span; dependent ones don’t.</p>
+                    <p><strong>Python Awareness:</strong> Independence shows up as full column rank.</p>
+<pre>
+# If True, columns are independent
+is_independent = np.linalg.matrix_rank(X) == X.shape[1]
+</pre>
+
+                    <hr>
+
+                    <h3>How This Connects to Data Science</h3>
+                    <p>I’m not a data scientist, but while reading about regression and feature engineering, these ideas kept showing up—especially around <strong>multicollinearity</strong>. Once I learned that features are treated as vectors, the connection became clear.</p>
+
+                    <p><strong>Example: Redundant Features</strong><br>
+                    Imagine a dataset with two columns:</p>
                     <ul>
-                        <li><strong>Vector Addition:</strong> $\mathbf{u} + \mathbf{v} \in V$ <br><span style="color:#666; font-size:0.9em;">(If you add two vectors, you get a vector).</span></li>
-                        <li><strong>Scalar Multiplication:</strong> $c \cdot \mathbf{v} \in V$ <br><span style="color:#666; font-size:0.9em;">(If you scale a vector, you get a vector).</span></li>
+                        <li>$\vec{v}_1$: Age in years $\rightarrow [20, 30, 40]$</li>
+                        <li>$\vec{v}_2$: Age in months $\rightarrow [240, 360, 480]$</li>
+                    </ul>
+                    
+                    <p>Since $\vec{v}_2 = 12 \cdot \vec{v}_1$, these vectors are <strong>Linearly Dependent</strong>.</p>
+                    <ul>
+                        <li><strong>Linear Algebra View:</strong> Both generate the same span.</li>
+                        <li><strong>Machine Learning View:</strong> One feature adds <em>no new information</em>.</li>
                     </ul>
 
-                    <p><strong>3. The Axioms:</strong><br>
-                    A set is a vector space if and only if it satisfies 8 specific rules, such as Associativity, Commutativity, and the existence of an Identity Element ($\mathbf{0}$).</p>
-
-                    <p><strong>4. Functions as Vectors:</strong><br>
-                    Since functions also obey these rules (you can add $f(x) + g(x)$), mathematically, they are vectors too. This is the basis of Functional Analysis.</p>
-
-                    <p><strong>5. In the Euclidean space:</strong><br>
-                    In Data Science, we usually work in $\mathbb{R}^n$. Here, a vector $\mathbf{v}$ is an $n$-tuple of real numbers:
-                    $$ \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix} $$
-                    </p>
-
-                    <p><strong>6. Geometrically (The Tensor View):</strong><br>
-                    Vectors are defined by how they handle coordinate transformations. It’s intuitive to understand this with the transformation rule using the <strong>Jacobian Matrix</strong>. A vector must transform <em>against</em> the change of basis (Contravariance):
-                    $$ v'^i = \sum_{j=1}^n \frac{\partial x'^i}{\partial x^j} v^j $$
-                    </p>
-
-                    <br><hr><br>
-
-                    <h3>II. Understanding vectors with python</h3>
-                    <p><em>Understanding vectors using Python.</em></p>
-
-                    <h4>1. Vector Addition: Using NumPy</h4>
-                    <pre>
-import numpy as np
-a = np.array([1, 2])
-b = np.array([3, 4])
-print(f"a + b = {a + b}")
-# Output: [4 6]
-</pre>
-                    <p>It stays in $\mathbb{R}^2$ and even $b + a$ gives the same result, hence commutativity holds.</p>
-
-                    <h4>2. Visual Proof: Breaking down the Matplotlib Code</h4>
-                    <p>To prove that <code>[4, 6]</code> is actually the result of "walking" along the vectors, we visualized it. Here is the breakdown of the code we used to generate the plot.</p>
-
-                    <p><strong>Step A: The Setup</strong><br>
-                    First, we define a helper function to draw arrows. The function uses <code>plt.quiver</code>, which is designed for vector fields.</p>
-<pre>
-def plot_arrow(start, vector, color, label):
-    plt.quiver(*start, *vector, angles='xy', scale_units='xy', scale=1, color=color, label=label)
-</pre>
-
-                    <p><strong>Step B: The Plotting</strong><br>
-                    We plot the first vector ($\vec{a}$), and then—this is the trick—we plot the second vector ($\vec{b}$) <strong>starting from the tip of $\vec{a}$</strong>.</p>
-<pre>
-origin = [0, 0]
-# 1. The First Step (Blue)
-plot_arrow(origin, a, 'blue', 'a = [1, 2]')
-# 2. The Second Step (Red) - Notice the start point is 'a'
-plot_arrow(a, b, 'red', 'b = [3, 4]')
-# 3. The Result (Green) - From Origin to Destination
-result = a + b
-plot_arrow(origin, result, 'green', 'Result = [4, 6]')
-</pre>
-
-                    <p><strong>The Output:</strong></p>
                     
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="auto" viewBox="0 0 500 700" style="max-width:400px; display:inline-block;">
-                            <defs>
-                                <marker id="arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="blue" /></marker>
-                                <marker id="arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="red" /></marker>
-                                <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="green" /></marker>
-                            </defs>
-                            <g stroke="#eee" stroke-width="1"><line x1="50" y1="650" x2="450" y2="650" /><line x1="50" y1="650" x2="50" y2="50" /></g>
-                            <line x1="50" y1="650" x2="130" y2="490" stroke="blue" stroke-width="3" marker-end="url(#arrow-blue)" />
-                            <line x1="130" y1="490" x2="370" y2="170" stroke="red" stroke-width="3" marker-end="url(#arrow-red)" />
-                            <line x1="50" y1="650" x2="370" y2="170" stroke="green" stroke-width="3" marker-end="url(#arrow-green)" />
-                            <text x="70" y="550" fill="blue" font-family="sans-serif" font-size="14">a = [1, 2]</text>
-                            <text x="250" y="320" fill="red" font-family="sans-serif" font-size="14">b = [3, 4]</text>
-                            <text x="260" y="450" fill="green" font-family="sans-serif" font-size="14" font-weight="bold">Result = [4, 6]</text>
-                        </svg>
-                        <br><em style="font-size:12px; color:#888;">Figure 1: Visual proof that [1,2] + [3,4] lands us exactly at [4,6].</em>
-                    </div>
-                    <br>
+
+                    <p>This is exactly what causes <strong>Multicollinearity</strong>—features that look different but encode the same direction, which can destabilize regression models.</p>
+
                     <div class="read-more" onclick="togglePost('post-001')">&uarr; Close Log</div>
                 </div>
             </div>
-
-        </div>
 
         <div class="sidebar">
             <div class="widget">
@@ -316,3 +311,4 @@ plot_arrow(origin, result, 'green', 'Result = [4, 6]')
 </div>
 </body>
 </html>
+
