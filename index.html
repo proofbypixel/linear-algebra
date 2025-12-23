@@ -16,26 +16,19 @@
     <script>
         function togglePost(id) {
             var fullContent = document.getElementById(id + '-full');
-            var toggleBtn = document.getElementById(id + '-btn');
-            
+            // Toggle Logic
             if (fullContent.style.display === "none") {
                 fullContent.style.display = "block";
-                toggleBtn.innerHTML = "&uarr; Close";
-                // Re-render math in case it was hidden
                 if (window.MathJax) MathJax.typesetPromise(); 
             } else {
                 fullContent.style.display = "none";
-                toggleBtn.innerHTML = "Open &rarr;";
             }
         }
 
         function openNext(nextId) {
             var nextContent = document.getElementById(nextId + '-full');
-            var nextBtn = document.getElementById(nextId + '-btn');
-            
             if (nextContent.style.display === "none") {
                 nextContent.style.display = "block";
-                nextBtn.innerHTML = "&uarr; Close";
                 if (window.MathJax) MathJax.typesetPromise(); 
             }
             document.getElementById(nextId).scrollIntoView({behavior: 'smooth'});
@@ -45,7 +38,7 @@
     <style>
         /* --- GLOBAL RESET --- */
         * { box-sizing: border-box; } 
-        body { margin: 0; padding: 0; background-color: #f4f7f6; font-family: "Georgia", "Times New Roman", serif; color: #333; line-height: 1.6; font-size: 16px; overflow-x: hidden; }
+        body { margin: 0; padding: 0; background-color: #f8f9fa; font-family: "Georgia", "Times New Roman", serif; color: #333; line-height: 1.6; font-size: 16px; overflow-x: hidden; }
         a { color: #0066cc; text-decoration: none; cursor: pointer; }
         a:hover { text-decoration: underline; }
 
@@ -53,13 +46,14 @@
         :root {
             --brand-color: #2c3e50;
             --link-blue: #0066cc;
+            --timeline-color: #dbe4eb;
         }
 
         /* --- LAYOUT --- */
-        .wrapper { max-width: 960px; width: 96%; margin: 0 auto; background-color: #ffffff; border-left: 1px solid #ddd; border-right: 1px solid #ddd; min-height: 100vh; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        .wrapper { max-width: 960px; width: 96%; margin: 0 auto; background-color: #ffffff; border-left: 1px solid #ddd; border-right: 1px solid #ddd; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.03); }
         
         /* --- HEADER --- */
-        header { padding: 40px 40px 30px 40px; background-color: var(--brand-color); color: #ffffff; border-bottom: none; }
+        header { padding: 40px 40px 30px 40px; background-color: var(--brand-color); color: #ffffff; }
         .header-top { display: flex; align-items: center; }
         .logo { background-color: #ffffff; color: var(--brand-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 18px; padding: 5px 10px; border-radius: 3px; margin-right: 15px; letter-spacing: -0.5px; }
         header h1 { margin: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 32px; letter-spacing: -1px; display: inline-block; }
@@ -74,30 +68,46 @@
         .content { flex: 2; padding-right: 40px; min-width: 0; } 
         .sidebar { flex: 1; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; color: #666; border-left: 1px solid #eee; padding-left: 20px; min-width: 0; }
 
-        /* --- INTRO NOTE --- */
-        .intro-note {
-            background-color: #e8f4fc;
-            border-left: 4px solid var(--brand-color);
-            padding: 15px 20px;
-            margin-bottom: 30px;
-            color: #444;
-            font-size: 15px;
-            font-style: italic;
-            border-radius: 0 4px 4px 0;
+        /* --- SECTION HEADERS --- */
+        .section-label {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
         }
-        .intro-note strong { color: var(--brand-color); font-style: normal; }
 
-        /* --- COMPACT POST STYLING --- */
-        .post { 
-            margin-bottom: 15px; /* Reduced Gap */
-            border-bottom: 1px solid #eee; 
-            padding-bottom: 15px; 
-            display: flex;
-            flex-direction: column;
+        /* --- TIMELINE CONTAINER --- */
+        .timeline {
+            position: relative;
+            padding-left: 25px; /* Space for the line */
+            border-left: 2px solid var(--timeline-color);
+            margin-bottom: 20px;
         }
-        .post:last-child { border-bottom: none; }
+
+        /* --- POST STYLING --- */
+        .post { 
+            margin-bottom: 20px;
+            position: relative;
+        }
         
-        /* Post Header Row (Title + Date + Button) */
+        /* The dot on the timeline */
+        .post::before {
+            content: '';
+            position: absolute;
+            left: -32px; /* Adjust based on padding of timeline */
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border: 2px solid var(--link-blue);
+            border-radius: 50%;
+        }
+
         .post-header {
             display: flex;
             justify-content: space-between;
@@ -106,40 +116,24 @@
 
         .post-title { 
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
-            font-size: 18px; /* Smaller Size */
-            font-weight: bold; 
-            color: var(--link-blue); /* Blue Color */
+            font-size: 16px; /* Smaller */
+            font-weight: 400; /* Non-bold */
+            color: var(--link-blue);
             cursor: pointer; 
             margin: 0;
+            line-height: 1.4;
         }
-        .post-title:hover { text-decoration: underline; }
-
-        .post-meta-group {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        .post-title:hover { text-decoration: underline; color: #003366; }
 
         .post-date { 
             font-size: 11px; 
-            color: #999; 
+            color: #aaa; 
             text-transform: uppercase; 
-            letter-spacing: 1px; 
+            letter-spacing: 0.5px; 
             margin: 0;
+            white-space: nowrap;
+            margin-left: 10px;
         }
-
-        .toggle-btn {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 11px;
-            font-weight: bold;
-            color: #555;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            padding: 2px 8px;
-            border-radius: 3px;
-            background: #fff;
-        }
-        .toggle-btn:hover { background: #f0f0f0; color: #333; }
 
         /* Content Styling */
         h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 18px; margin-top: 30px; border-bottom: 2px solid #333; padding-bottom: 5px; }
@@ -154,10 +148,39 @@
         .study-log strong { color: var(--brand-color); }
 
         /* Hidden by default */
-        .post-full { display: none; animation: fadeIn 0.5s; margin-top: 10px; }
+        .post-full { display: none; animation: fadeIn 0.5s; margin-top: 15px; padding-bottom: 20px; border-bottom: 1px dashed #eee; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .next-link { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #ddd; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 14px; }
+
+        /* --- PIPELINE CONNECTOR SVG --- */
+        .pipeline-connector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: -20px 0 20px 0;
+            padding-left: 25px; /* Align with timeline content */
+        }
+        
+        /* Checkpoint Styling (Special) */
+        .checkpoint-post .post-title {
+            color: #c0392b; /* Reddish for alerts/checkpoints */
+            font-weight: bold; /* Keep checkpoint bold to stand out */
+        }
+        .checkpoint-post::before {
+            border-color: #c0392b;
+            background: #c0392b;
+        }
+        .checkpoint-box {
+            border: 2px solid #c0392b;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff9f9;
+        }
+
+        /* Intro Note */
+        .intro-note { background-color: #e8f4fc; border-left: 4px solid var(--brand-color); padding: 15px 20px; margin-bottom: 30px; color: #444; font-size: 15px; font-style: italic; border-radius: 0 4px 4px 0; }
+        .intro-note strong { color: var(--brand-color); font-style: normal; }
 
         /* Sidebar Widgets */
         .widget { margin-bottom: 40px; }
@@ -173,8 +196,8 @@
             header { padding: 30px 20px; }
             .header-top { flex-direction: column; align-items: flex-start; }
             .logo { margin-bottom: 10px; }
-            .post-header { flex-direction: column; align-items: flex-start; gap: 5px; }
-            .post-meta-group { width: 100%; justify-content: space-between; margin-top: 5px; }
+            .timeline { padding-left: 15px; border-left: 1px solid var(--timeline-color); }
+            .post::before { left: -20px; width: 10px; height: 10px; }
         }
     </style>
 </head>
@@ -203,190 +226,147 @@
                 <strong>A note to the reader:</strong> This blog is structured like a learning pipeline. We write study logs while learning the mathematics behind data models—one concept at a time. After a few logs, we write a checkpoint, where we apply those ideas to a small, hypothetical data science problem.
             </div>
 
-            <div class="post" id="post-001">
-                <div class="post-header">
-                    <div class="post-title" onclick="togglePost('post-001')">Log 001: Understanding the Basis of Data</div>
-                    <div class="post-meta-group">
+            <div class="section-label">Study Logs</div>
+            
+            <div class="timeline">
+                
+                <div class="post" id="post-001">
+                    <div class="post-header" onclick="togglePost('post-001')">
+                        <div class="post-title">Log 001: Understanding the Basis of Data</div>
                         <div class="post-date">16 Dec 2025</div>
-                        <div class="toggle-btn" id="post-001-btn" onclick="togglePost('post-001')">Open &rarr;</div>
+                    </div>
+                    <div class="post-full" id="post-001-full">
+                        <div class="study-log">
+                            <h4 style="margin-top:0;">📝 The Study Log</h4>
+                            <ul>
+                                <li><strong>Topics:</strong> Vector Spaces, Subspaces, Span, Linear Independence.</li>
+                                <li><strong>Insight:</strong> As long as adding and scaling vectors doesn’t push you outside the set, you’re in a vector space.</li>
+                            </ul>
+                        </div>
+                        <h3>Concept Summary</h3>
+                        <p><strong>Vector Space:</strong> A set where addition and scaling are defined. ($ \vec{u} + \vec{v} \in V $).<br>
+                        <strong>Linear Independence:</strong> No vector is redundant. This prevents Multicollinearity in data.</p>
+                        <div class="next-link">Next: <a onclick="openNext('post-002')">Log 002 &rarr; Rank & Affine Spaces</a></div>
                     </div>
                 </div>
 
-                <div class="post-full" id="post-001-full">
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Vector Spaces, Subspaces, Span, Linear Independence.</li>
-                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler), <em>Mathematics for Machine Learning</em>.</li>
-                            <li><strong>Prerequisites:</strong> High school mathematics, basic Python.</li>
-                            <li><strong>Interesting Score:</strong> 7/10.</li>
-                            <li><strong>The Insight:</strong> As long as adding and scaling vectors doesn’t push you outside the set, you’re in a vector space.</li>
-                        </ul>
-                    </div>
-                    
-                    <h3>Concept Summary</h3>
-                    <h4>1. Vector Space</h4>
-                    <p>A vector space $V$ is a set where addition and scaling are defined. Formally, for all $\vec{u}, \vec{v} \in V$ and $\alpha \in \mathbb{F}$: $\vec{u} + \vec{v} \in V$ and $\alpha \vec{v} \in V$.</p>
-                    <p><strong>Python Awareness:</strong> Arrays supporting addition.</p>
-<pre>
-v = np.array([1, 2, 3])
-result = 2 * v + v  # Remains in space
-</pre>
-
-                    <h4>2. Span & Linear Independence</h4>
-                    <p>The <strong>Span</strong> is the set of all reachable vectors from a list. <strong>Linear Independence</strong> means no vector in the list is redundant (can be built from others).</p>
-                    <p>$$ \sum \alpha_i \vec{v}_i = \vec{0} \implies \alpha_i = 0 $$</p>
-
-                    <hr>
-                    <h3>Data Science Connection: Redundant Features</h3>
-                    <p>If two columns in a dataset are linearly dependent (e.g., Age in Years vs Age in Months), one adds no new information to the Span. This causes <strong>Multicollinearity</strong>.</p>
-                    
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="150" viewBox="0 0 500 150">
-                            <line x1="50" y1="100" x2="450" y2="100" stroke="#eee" />
-                            <line x1="50" y1="100" x2="150" y2="100" stroke="blue" stroke-width="3" />
-                            <text x="100" y="80" fill="blue" font-size="12">v1</text>
-                            <line x1="50" y1="100" x2="350" y2="100" stroke="red" stroke-width="1" stroke-dasharray="5,5" />
-                            <text x="300" y="80" fill="red" font-size="12">v2 (Redundant)</text>
-                        </svg>
-                        <br><em style="font-size:11px; color:#888;">Dependent vectors lie on the same line.</em>
-                    </div>
-
-                    <div class="next-link">
-                        Next: <a onclick="openNext('post-002')">Log 002 &rarr; Rank, Linear Mappings & Affine Spaces</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="post" id="post-002">
-                <div class="post-header">
-                    <div class="post-title" onclick="togglePost('post-002')">Log 002: Rank, Linear Mappings & Affine Spaces</div>
-                    <div class="post-meta-group">
+                <div class="post" id="post-002">
+                    <div class="post-header" onclick="togglePost('post-002')">
+                        <div class="post-title">Log 002: Rank, Linear Mappings & Affine Spaces</div>
                         <div class="post-date">17 Dec 2025</div>
-                        <div class="toggle-btn" id="post-002-btn" onclick="togglePost('post-002')">Open &rarr;</div>
+                    </div>
+                    <div class="post-full" id="post-002-full">
+                        <div class="study-log">
+                            <h4 style="margin-top:0;">📝 The Study Log</h4>
+                            <ul>
+                                <li><strong>Topics:</strong> Rank, Linear Mappings, Kernel, Affine Spaces.</li>
+                                <li><strong>Insight:</strong> Information is either preserved (Rank) or lost (Kernel).</li>
+                            </ul>
+                        </div>
+                        <h3>Concept Summary</h3>
+                        <p><strong>Rank:</strong> The real dimension of data.<br>
+                        <strong>Affine Space:</strong> A vector space + a shift ($\vec{v}_0 + U$). This is why linear models have bias terms ($y=mx+c$).</p>
+                        <div class="next-link">Next: <a onclick="openNext('post-003')">Log 003 &rarr; Norms & Inner Products</a></div>
                     </div>
                 </div>
 
-                <div class="post-full" id="post-002-full">
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Rank, Linear Mappings, Kernel/Image, Affine Spaces.</li>
-                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler), <em>Mathematics for Machine Learning</em>.</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
-                            <li><strong>The Insight:</strong> Information is either preserved (Rank) or lost (Kernel), never both.</li>
-                        </ul>
-                    </div>
-
-                    <h3>Concept Summary</h3>
-                    <h4>1. Rank</h4>
-                    <p>Rank measures the "real" dimension of data. $\text{rank}(A) = \dim(\text{Col}(A))$.</p>
-                    <p><strong>Python Awareness:</strong> <code>np.linalg.matrix_rank(X)</code></p>
-
-                    <h4>2. Affine Spaces</h4>
-                    <p>An affine space is a vector space shifted away from the origin: $\mathcal{A} = \vec{v}_0 + U$.</p>
-
-                    <hr>
-                    <h3>Data Science Connection: Bias Terms</h3>
-                    <p>A <strong>Linear</strong> model ($y=Ax$) must pass through zero. An <strong>Affine</strong> model ($y=Ax+b$) can shift to fit data anywhere.</p>
-                    
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="200" viewBox="0 0 400 200">
-                             <g stroke="#eee" stroke-width="1"><line x1="200" y1="10" x2="200" y2="190" /><line x1="10" y1="150" x2="390" y2="150" /></g>
-                            <line x1="100" y1="200" x2="300" y2="100" stroke="blue" stroke-width="2" />
-                            <text x="310" y="100" fill="blue" font-size="12">Linear</text>
-                            <line x1="100" y1="100" x2="300" y2="20" stroke="red" stroke-width="2" />
-                            <text x="310" y="20" fill="red" font-size="12">Affine</text>
-                            <circle cx="200" cy="150" r="3" fill="#333" />
-                        </svg>
-                    </div>
-
-                    <div class="next-link">
-                        Next: <a onclick="openNext('post-003')">Log 003 &rarr; Norms & Inner Products</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="post" id="post-003">
-                <div class="post-header">
-                    <div class="post-title" onclick="togglePost('post-003')">Log 003: Norms & Inner Products</div>
-                    <div class="post-meta-group">
+                <div class="post" id="post-003">
+                    <div class="post-header" onclick="togglePost('post-003')">
+                        <div class="post-title">Log 003: Norms & Inner Products</div>
                         <div class="post-date">18 Dec 2025</div>
-                        <div class="toggle-btn" id="post-003-btn" onclick="togglePost('post-003')">Open &rarr;</div>
+                    </div>
+                    <div class="post-full" id="post-003-full">
+                        <div class="study-log">
+                            <h4 style="margin-top:0;">📝 The Study Log</h4>
+                            <ul>
+                                <li><strong>Topics:</strong> Norms, Inner Products, Angles.</li>
+                                <li><strong>Insight:</strong> Inner products allow vectors to "talk" to each other (measure alignment).</li>
+                            </ul>
+                        </div>
+                        <h3>Concept Summary</h3>
+                        <p><strong>Norm:</strong> Length of a vector (Distance).<br>
+                        <strong>Inner Product:</strong> Alignment of vectors (Correlation). This leads to Cosine Similarity.</p>
+                        <div class="next-link">Next: <a onclick="openNext('post-004')">Log 004 &rarr; Orthogonality</a></div>
                     </div>
                 </div>
 
-                <div class="post-full" id="post-003-full">
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Norms, Inner Products, Length, Angle.</li>
-                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
-                            <li><strong>The Insight:</strong> Inner Products allow vectors to measure alignment (angles).</li>
-                        </ul>
+                <div class="post" id="post-004">
+                    <div class="post-header" onclick="togglePost('post-004')">
+                        <div class="post-title">Log 004: Angles, Orthogonality & Structure</div>
+                        <div class="post-date">19 Dec 2025</div>
                     </div>
-
-                    <h3>Concept Summary</h3>
-                    <h4>1. Norm vs. Inner Product</h4>
-                    <p><strong>Norm:</strong> Measures length ($||\vec{v}||$).<br>
-                    <strong>Inner Product:</strong> Measures interaction/angle ($\langle \vec{u}, \vec{v} \rangle$).</p>
-                    <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \|\vec{v}\|} $$</p>
-                    
-                    <hr>
-                    <h3>Data Science Connection</h3>
-                    <p><strong>Cosine Similarity</strong> uses the inner product (ignoring magnitude), useful for text analysis. <strong>Euclidean Distance</strong> uses the norm, useful when magnitude matters (e.g., salary data).</p>
-
-                    <div class="next-link">
-                        Next: <a onclick="openNext('post-004')">Log 004 &rarr; Angles, Orthogonality & Structure</a>
+                    <div class="post-full" id="post-004-full">
+                        <div class="study-log">
+                            <h4 style="margin-top:0;">📝 The Study Log</h4>
+                            <ul>
+                                <li><strong>Topics:</strong> Orthogonality, Orthogonal Complements ($U^\perp$).</li>
+                                <li><strong>Insight:</strong> Orthogonality means independence. "Least Squares" is geometric projection.</li>
+                            </ul>
+                        </div>
+                        <h3>Concept Summary</h3>
+                        <p><strong>Orthogonality:</strong> $\langle \vec{u}, \vec{v} \rangle = 0$. Vectors share no information.<br>
+                        <strong>Least Squares:</strong> The error vector lives in the orthogonal complement of the feature space.</p>
+                        <div class="next-link">Next: <a onclick="openNext('checkpoint-001')">Checkpoint 001 &rarr; The Geometry of Linear Regression</a></div>
                     </div>
                 </div>
+
+            </div> <div class="pipeline-connector">
+                <svg width="200" height="60" viewBox="0 0 200 60">
+                    <line x1="26" y1="0" x2="26" y2="20" stroke="#dbe4eb" stroke-width="2" />
+                    <path d="M 26 20 Q 26 40 100 40 T 174 60" fill="none" stroke="#dbe4eb" stroke-width="2" stroke-dasharray="4,4" />
+                    <polygon points="174,60 168,52 180,52" fill="#dbe4eb" />
+                    <text x="60" y="30" font-family="Helvetica, Arial" font-size="10" fill="#999" font-style="italic">Applying Logs 1-4</text>
+                </svg>
             </div>
 
-            <div class="post" id="post-004">
-                <div class="post-header">
-                    <div class="post-title" onclick="togglePost('post-004')">Log 004: Angles, Orthogonality & Structure</div>
-                    <div class="post-meta-group">
-                        <div class="post-date">19 Dec 2025</div>
-                        <div class="toggle-btn" id="post-004-btn" onclick="togglePost('post-004')">Open &rarr;</div>
-                    </div>
+            <div class="section-label">Data Science Problems</div>
+
+            <div class="post checkpoint-post" id="checkpoint-001">
+                <div class="post-header" onclick="togglePost('checkpoint-001')">
+                    <div class="post-title">Checkpoint 001: The Geometry of Linear Regression</div>
+                    <div class="post-date" style="color:#c0392b;">20 Dec 2025</div>
                 </div>
 
-                <div class="post-full" id="post-004-full">
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Orthogonality, Bases, Complements ($U^\perp$).</li>
-                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
-                            <li><strong>The Insight:</strong> Orthogonality means independence. "Least Squares" is just projecting a vector onto a subspace.</li>
-                        </ul>
-                    </div>
-
-                    <h3>Concept Summary</h3>
-                    <h4>1. Orthogonality</h4>
-                    <p>Vectors are orthogonal if $\langle \vec{u}, \vec{v} \rangle = 0$. This implies they share no directional information.</p>
-
-                    <h4>2. Orthogonal Decomposition</h4>
-                    <p>Any vector can be split into a "Signal" part (in subspace $U$) and a "Noise" part (in $U^\perp$).</p>
-
-                    <hr>
-                    <h3>Data Science Connection: Least Squares</h3>
-                    <p>In regression, the "Error" is the part of the target vector that lives in the <strong>Orthogonal Complement</strong> of the feature space.</p>
+                <div class="post-full" id="checkpoint-001-full">
                     
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="200" viewBox="0 0 400 200">
-                            <polygon points="50,150 150,180 350,130 250,100" fill="#eef" stroke="#99a" />
-                            <text x="300" y="120" fill="#77a">Feature Space</text>
-                            <line x1="150" y1="180" x2="150" y2="20" stroke="#333" stroke-width="2" />
-                            <text x="140" y="20" fill="#333">y (Target)</text>
-                            <line x1="150" y1="180" x2="250" y2="140" stroke="blue" stroke-width="3" />
-                            <text x="260" y="150" fill="blue">Prediction</text>
-                            <line x1="250" y1="140" x2="150" y2="20" stroke="red" stroke-width="2" stroke-dasharray="5,5" />
-                            <text x="210" y="80" fill="red">Error</text>
-                        </svg>
-                        <br><em style="font-size:11px; color:#888;">The error is orthogonal to the prediction.</em>
+                    <div class="checkpoint-box">
+                        <h4 style="margin-top:0; color:#c0392b;">🎯 The Problem</h4>
+                        <p><strong>Goal:</strong> Predict House Prices ($y$) based on Size and Age ($X$).<br>
+                        <strong>The Issue:</strong> Real-world data is noisy. The points don't form a perfect line. There is no solution to $X\vec{w} = \vec{y}$.</p>
                     </div>
+
+                    <h3>Applying The Logs</h3>
+                    
+                    <p>Instead of thinking of this as "minimizing error", we use the geometry we learned in Logs 001-004.</p>
+
+                    <ul>
+                        <li><strong>Log 001 (Span):</strong> Our features (Size, Age) create a "Plane of Possibility" (the Span). The target vector $\vec{y}$ (Prices) floats <em>above</em> this plane.</li>
+                        <li><strong>Log 002 (Rank):</strong> If Size and Age are correlated, the Rank drops, and our plane collapses into a line.</li>
+                        <li><strong>Log 003 (Distance):</strong> We want the $\vec{w}$ that makes the distance $||\vec{y} - X\vec{w}||$ as small as possible.</li>
+                        <li><strong>Log 004 (Orthogonality):</strong> The shortest path from $\vec{y}$ to the plane is a straight line down. The Error vector must be <strong>Orthogonal</strong> to the plane.</li>
+                    </ul>
+
+                    <div style="text-align:center; margin: 30px 0; border:1px solid #eee; padding:20px; background:white;">
+                        <svg width="100%" height="200" viewBox="0 0 400 200">
+                            <polygon points="50,150 150,180 350,130 250,100" fill="#fdf2f2" stroke="#e6b0aa" stroke-width="2"/>
+                            <text x="270" y="125" fill="#c0392b" font-size="12">Feature Span (Logs 1-2)</text>
+                            
+                            <line x1="150" y1="180" x2="150" y2="40" stroke="#333" stroke-width="2"/>
+                            <text x="130" y="35" fill="#333" font-weight="bold">y (Price)</text>
+                            
+                            <line x1="150" y1="180" x2="250" y2="140" stroke="#c0392b" stroke-width="3"/>
+                            <text x="240" y="160" fill="#c0392b" font-weight="bold">Prediction</text>
+                            
+                            <line x1="250" y1="140" x2="150" y2="40" stroke="#999" stroke-width="2" stroke-dasharray="5,5"/>
+                            <text x="210" y="80" fill="#999">Error (Log 4)</text>
+                        </svg>
+                        <br><em style="font-size:11px; color:#666;">Figure 1: Applying all 4 concepts to solve Regression.</em>
+                    </div>
+
+                    <p><strong>The Solution:</strong> Because of Log 004, we know $\langle X\vec{w}, \vec{y} - X\vec{w} \rangle = 0$. This leads directly to the Normal Equation:</p>
+                    <p>$$ \vec{w} = (X^\top X)^{-1} X^\top \vec{y} $$</p>
+
+                    <div class="read-more" onclick="togglePost('checkpoint-001')">&uarr; Close Checkpoint</div>
                 </div>
             </div>
 
@@ -394,7 +374,7 @@ result = 2 * v + v  # Remains in space
 
         <div class="sidebar">
             <div class="widget">
-                <h3>The Editors: Abhinav Rastogi & Stuti Goyal</h3>
+                <h3>About us</h3>
                 <p>We are MBA students at IIT Madras (Class of 2027) exploring Data Science and the Math behind it.</p>
             </div>
             <div class="widget">
