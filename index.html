@@ -3,94 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proof by Pixel: The Linear Algebra of Sight</title>
-    
+    <title>Proof by Pixel | Abhinav Rastogi</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
     
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
         /* --- DESIGN TOKENS --- */
         :root {
             --bg-color: #ffffff;
-            --text-main: #222222;
-            --text-muted: #666666;
-            --accent: #2962ff; /* Distill-like blue */
-            --code-bg: #f7f7f7;
+            --text-main: #222;
+            --text-muted: #666;
+            --accent: #2c3e50;
+            --link-blue: #0066cc;
+            --code-bg: #f5f7f9;
             --font-serif: 'Merriweather', serif;
             --font-sans: 'Lato', sans-serif;
             --font-mono: 'Roboto Mono', monospace;
         }
 
         body {
-            background: var(--bg-color);
+            background-color: var(--bg-color);
             color: var(--text-main);
             font-family: var(--font-serif);
-            line-height: 1.7;
-            font-size: 19px;
+            line-height: 1.8;
+            font-size: 18px; 
             margin: 0;
             font-weight: 300;
         }
 
-        /* --- LAYOUT GRID --- */
-        /* This 4-column grid handles the Tufte layout: margins, main text, and sidenotes */
+        /* --- THE DISTILL GRID SYSTEM --- */
         .distill-grid {
             display: grid;
+            /* Layout: Left Margin | Main Content (Centered) | Sidenotes (Right) | Right Margin */
             grid-template-columns: 1fr minmax(auto, 680px) minmax(auto, 300px) 1fr;
             column-gap: 3rem;
         }
 
-        /* By default, elements sit in the center column (2) */
-        .distill-grid > * { grid-column: 2; }
+        .distill-grid > * { grid-column: 2; } /* Default text goes in center */
 
         /* --- HEADER --- */
-        .article-header {
-            grid-column: 2;
+        .main-header {
+            grid-column: 1 / -1;
             text-align: center;
-            padding: 5rem 0 4rem;
+            padding: 5rem 1rem 4rem;
+            background: linear-gradient(to bottom, #fafafa, #fff);
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
         }
 
-        .article-header h1 {
+        .logo-mark {
+            font-family: var(--font-sans);
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: inline-block;
+            border: 2px solid var(--accent);
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+
+        .main-header h1 {
             font-family: var(--font-sans);
             font-weight: 900;
-            font-size: 3rem;
+            font-size: 3.5rem;
             line-height: 1.1;
-            margin: 0 0 1rem 0;
-            letter-spacing: -0.5px;
+            margin: 0.5rem 0;
+            letter-spacing: -1px;
+            color: #111;
         }
 
-        .subtitle {
+        .main-header .subtitle {
+            font-family: var(--font-sans);
             font-size: 1.25rem;
             color: var(--text-muted);
             font-weight: 300;
-            margin-bottom: 2rem;
-        }
-
-        .meta {
-            font-family: var(--font-sans);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #888;
+            margin-top: 10px;
         }
 
         /* --- TYPOGRAPHY --- */
-        p { margin-bottom: 1.5rem; }
-        
         h2 {
             font-family: var(--font-sans);
             font-weight: 700;
-            font-size: 1.6rem;
-            margin-top: 3rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
+            font-size: 1.8rem;
+            margin-top: 4rem;
+            margin-bottom: 1.5rem;
+            color: #111;
             border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-family: var(--font-sans);
+            font-size: 1.3rem;
+            margin-top: 2.5rem;
+            color: #444;
+        }
+
+        p { margin-bottom: 1.5rem; text-align: justify; }
+        
+        /* The Math Block Container */
+        .math-block {
+            text-align: center;
+            padding: 1.5rem 0;
+            overflow-x: auto;
+            font-size: 1.15rem; /* Slightly larger for math visibility */
         }
 
         /* --- SIDENOTES --- */
         .sidenote-number {
-            color: var(--accent);
+            color: var(--link-blue);
             vertical-align: super;
             font-size: 0.6em;
             font-weight: bold;
@@ -99,162 +137,220 @@
         }
 
         .sidenote {
-            grid-column: 3; /* Pushes text to the right margin */
+            grid-column: 3;
             font-family: var(--font-sans);
             font-size: 0.85rem;
             line-height: 1.5;
-            color: var(--text-muted);
-            margin-top: 0.2rem;
+            color: #555;
+            margin-top: 0.4rem;
+            margin-bottom: 2rem;
             padding-left: 1rem;
             border-left: 2px solid #eee;
         }
 
-        /* --- CODE & MATH --- */
-        pre {
-            background: var(--code-bg);
-            padding: 1.5rem;
-            border-radius: 4px;
-            border-left: 4px solid var(--accent);
-            overflow-x: auto;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
+        .sidenote strong { color: var(--accent); display: block; margin-bottom: 4px; }
+        .sidenote ul { padding-left: 15px; margin: 0; }
+        .sidenote li { margin-bottom: 4px; }
+
+        /* --- VISUALS --- */
+        .visual-container {
+            background: #fafafa;
+            border: 1px solid #eee;
+            padding: 2rem;
             margin: 2rem 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .visual-container em {
+            display: block;
+            margin-top: 15px;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: #777;
+            font-style: normal;
         }
 
-        .math-block {
-            text-align: center;
-            padding: 1.5rem 0;
-            overflow-x: auto;
+        /* --- INTRO NOTE --- */
+        .intro-note {
+            background-color: #f0f7fb;
+            border-left: 4px solid var(--link-blue);
+            padding: 1.5rem;
+            margin-bottom: 4rem;
+            font-family: var(--font-sans);
+            color: #444;
+            font-style: italic;
         }
+        .intro-note strong { font-style: normal; color: var(--link-blue); }
 
         /* --- RESPONSIVE --- */
         @media (max-width: 1200px) {
-            .distill-grid {
-                grid-template-columns: 1fr minmax(auto, 90%) 1fr;
-            }
-            .sidenote {
-                grid-column: 2;
-                float: none;
-                margin: 1.5rem 0;
-                background: #fafafa;
-                padding: 1rem;
-                border-left: 4px solid #ddd;
-            }
+            .distill-grid { grid-template-columns: 1fr minmax(auto, 90%) 1fr; }
+            .sidenote { grid-column: 2; float: none; margin: 2rem 0; background: #f9f9f9; padding: 1rem; border-left: 4px solid #ddd; width: 100%; box-sizing: border-box; }
+            .main-header h1 { font-size: 2.5rem; }
         }
     </style>
 </head>
 <body>
 
+    <header class="main-header">
+        <div class="logo-mark">PbyP</div>
+        <h1>Proof by Pixel</h1>
+        <div class="subtitle">A mathematics blog by Abhinav Rastogi</div>
+    </header>
+
     <main class="distill-grid">
+        
+        <div class="intro-note">
+            <strong>A note to the reader:</strong> This blog is a personal learning pipeline. I write study logs while exploring the mathematical foundations of modern systems—one concept at a time.
+        </div>
 
-        <header class="article-header">
-            <div class="meta">Linear Algebra • Computer Graphics</div>
-            <h1>Proof by Pixel</h1>
-            <p class="subtitle">Deriving the visual world from scratch using vectors, dot products, and gradients.</p>
-        </header>
+        <h2>Log 001: Understanding the Basis of Data</h2>
+        <p class="meta" style="color:#999; font-family:var(--font-sans); font-size:0.8rem; margin-top:-1rem; text-transform:uppercase;">16 Dec 2025</p>
 
-        <section>
-            <p>
-                How do we teach a computer to see? Or conversely, how do we teach it to <em>draw</em>?
-                Traditional rasterization draws triangles. But there is a more mathematical approach: <strong>Ray Marching</strong>. 
-                It turns rendering into a root-finding problem, solvable with simple linear algebra. <span class="sidenote-number">1</span>
-            </p>
-            <aside class="sidenote">
-                1. This technique is distinct from Ray Tracing. Instead of calculating ray-triangle intersections, we march along a ray using a distance field.
-            </aside>
+        <p>
+            When we look at a spreadsheet, we see rows and columns. When a linear algebraist looks at it, they see a vector space. 
+            The fundamental question is: does adding more data actually add more information? <span class="sidenote-number">1</span>
+        </p>
 
-            <h2>1. The World as a Vector Space</h2>
-            
-            <p>
-                In this paradigm, we define the world using a <strong>Signed Distance Function (SDF)</strong>.
-                An SDF, let's call it $f(\mathbf{p})$, takes any vector position $\mathbf{p} \in \mathbb{R}^3$ and returns a scalar: the distance to the nearest surface.
-            </p>
+        <aside class="sidenote">
+            <strong>📝 The Study Log</strong>
+            <ul>
+                <li><strong>Topics:</strong> Vector Spaces, Span, Linear Independence.</li>
+                <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
+            </ul>
+        </aside>
 
-            <div class="math-block">
-                $$ f: \mathbb{R}^3 \to \mathbb{R} $$
-            </div>
+        <h3>1. Vector Space & Span</h3>
+        <p>
+            A vector space $V$ over a field $\mathbb{F}$ is a set where vector addition and scalar multiplication are defined and satisfy specific axioms.
+            I’m starting to think of <strong>Span</strong> as the <em>boundary of possibility</em>—anything outside it is unreachable without new vectors.
+        </p>
+        
+        <div class="math-block">
+            $$ \text{span}(\vec{v}_1, \dots, \vec{v}_n) = \{ \sum_{i=1}^{n} \alpha_i \vec{v}_i \mid \alpha_i \in \mathbb{F} \} $$
+        </div>
 
-            <p>
-                If $f(\mathbf{p}) < 0$, the vector is inside the object. If $f(\mathbf{p}) = 0$, it is on the surface.
-                For a sphere at the origin with radius $r$, the math is simply the Euclidean norm of the vector:
-            </p>
+        <h3>2. Linear Independence</h3>
+        <p>
+            A set of vectors is linearly independent if the only way to sum them to zero is by setting all coefficients to zero.
+            If one vector can be built from the others, it isn’t adding a new direction. Independent vectors expand the span; dependent ones don’t.
+        </p>
 
-            <div class="math-block">
-                $$ f(\mathbf{p}) = \|\mathbf{p}\| - r $$
-            </div>
-            
-            <p>Here is how we translate that linear algebra concept into code:</p>
+        <div class="visual-container">
+            <svg width="100%" height="150" viewBox="0 0 500 150">
+                <line x1="50" y1="100" x2="450" y2="100" stroke="#eee" />
+                <line x1="50" y1="100" x2="150" y2="100" stroke="#0066cc" stroke-width="3" />
+                <text x="100" y="80" fill="#0066cc" font-size="14" font-family="sans-serif">v1</text>
+                <line x1="50" y1="100" x2="350" y2="100" stroke="#e74c3c" stroke-width="2" stroke-dasharray="5,5" />
+                <text x="300" y="80" fill="#e74c3c" font-size="14" font-family="sans-serif">v2 (Redundant)</text>
+            </svg>
+            <em>Figure 1: Linearly Dependent vectors lie on the exact same trajectory.</em>
+        </div>
 
-            <pre><code class="language-python">import numpy as np
+        <h2>Log 002: Rank, Linear Mappings & Affine Spaces</h2>
+        <p class="meta" style="color:#999; font-family:var(--font-sans); font-size:0.8rem; margin-top:-1rem; text-transform:uppercase;">17 Dec 2025</p>
 
-def sphere_sdf(p, radius):
-    # p is a numpy vector [x, y, z]
-    # We use the L2 Norm (Euclidean distance)
-    return np.linalg.norm(p) - radius</code></pre>
+        <p>
+            Rank is the measure of "true" dimensionality. If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. <span class="sidenote-number">2</span>
+        </p>
 
-            <h2>2. The Ray (Parametric Line)</h2>
+        <aside class="sidenote">
+            <strong>Insight: Rank-Nullity</strong>
+            Information is either preserved (Rank) or lost (Kernel), never both.
+            <br>
+            <span style="font-size:0.9em">$\dim(V) = \text{rank}(T) + \dim(\ker(T))$</span>
+        </aside>
 
-            <p>
-                To see the sphere, we shoot rays from a camera. A ray is defined by a parametric line equation. 
-                Given an origin vector $\mathbf{ro}$ and a normalized direction vector $\mathbf{rd}$:
-            </p>
-            
-            <div class="math-block">
-                $$ \mathbf{p}(t) = \mathbf{ro} + t \cdot \mathbf{rd} $$
-            </div>
+        <h3>1. Linear vs. Affine</h3>
+        <p>
+            A pure <strong>Linear</strong> model forces predictions to pass through the origin $(0,0)$. 
+            An <strong>Affine</strong> model allows a shift via an intercept (bias term).
+        </p>
+        
+        <div class="math-block">
+            $$ \mathcal{A} = \vec{v}_0 + U $$
+        </div>
 
-            <p>
-                Our goal is to find the smallest scalar $t > 0$ such that $f(\mathbf{p}(t)) = 0$. <span class="sidenote-number">2</span>
-            </p>
-            <aside class="sidenote">
-                2. Since $\mathbf{rd}$ is normalized ($||\mathbf{rd}|| = 1$), the scalar $t$ represents the exact distance traveled along the ray.
-            </aside>
+        <div class="visual-container">
+            <svg width="100%" height="200" viewBox="0 0 400 200">
+                <g stroke="#eee" stroke-width="1"><line x1="200" y1="10" x2="200" y2="190" /><line x1="10" y1="150" x2="390" y2="150" /></g>
+                <line x1="100" y1="200" x2="300" y2="100" stroke="#0066cc" stroke-width="3" />
+                <text x="310" y="100" fill="#0066cc" font-size="14" font-family="sans-serif">Linear</text>
+                <line x1="100" y1="100" x2="300" y2="20" stroke="#e74c3c" stroke-width="3" />
+                <text x="310" y="20" fill="#e74c3c" font-size="14" font-family="sans-serif">Affine</text>
+                <circle cx="200" cy="150" r="4" fill="#333" />
+            </svg>
+            <em>Figure 2: Linear transformations are anchored to the origin; Affine ones can shift.</em>
+        </div>
 
-            <h2>3. Lighting via Dot Products</h2>
+        <h2>Log 003: Norms & Inner Products</h2>
+        <p class="meta" style="color:#999; font-family:var(--font-sans); font-size:0.8rem; margin-top:-1rem; text-transform:uppercase;">18 Dec 2025</p>
 
-            <p>
-                Once our ray hits a surface at point $\mathbf{p}$, we need to calculate how light reflects off it. 
-                Lambertian reflectance states that the intensity of light is proportional to the cosine of the angle between the surface normal $\mathbf{n}$ and the light direction $\mathbf{l}$.
-            </p>
+        <p>
+            Norms measure size, but Inner Products allow vectors to "talk" to each other (measure alignment).
+            The most familiar is the Euclidean norm:
+        </p>
+        <div class="math-block">
+            $$ \|\vec{v}\|_2 = \sqrt{\vec{v}^\top \vec{v}} $$
+        </div>
 
-            <p>
-                In linear algebra, the cosine of the angle between two normalized vectors is equivalent to their <strong>Dot Product</strong>:
-            </p>
+        <h3>The Geometry of Interaction</h3>
+        <p>
+            An inner product introduces geometry (angles) into a vector space. It allows us to define <strong>Orthogonality</strong>.
+            If $\langle \vec{u}, \vec{v} \rangle = 0$, the vectors are orthogonal. Zero interaction means zero alignment.
+        </p>
+        
+        <div class="visual-container">
+            <svg width="100%" height="200" viewBox="0 0 400 200">
+                <circle cx="50" cy="150" r="4" fill="#333" />
+                <line x1="50" y1="150" x2="250" y2="150" stroke="#0066cc" stroke-width="3" />
+                <text x="260" y="155" fill="#0066cc" font-weight="bold" font-family="sans-serif">u</text>
+                
+                <line x1="50" y1="150" x2="200" y2="30" stroke="#e74c3c" stroke-width="3" />
+                <text x="190" y="20" fill="#e74c3c" font-weight="bold" font-family="sans-serif">v</text>
+                
+                <line x1="250" y1="150" x2="200" y2="30" stroke="#27ae60" stroke-width="2" stroke-dasharray="5,5" />
+                <text x="235" y="90" fill="#27ae60" font-size="12" font-family="sans-serif">||u - v||</text>
+                
+                <path d="M 90 150 A 40 40 0 0 0 82 124" stroke="#666" fill="none" />
+                <text x="95" y="135" fill="#666" font-size="14" font-family="sans-serif">θ</text>
+            </svg>
+            <em>Figure 3: Angle, Distance, and Inner Product.</em>
+        </div>
 
-            <div class="math-block">
-                $$ Intensity = \max(0, \mathbf{n} \cdot \mathbf{l}) $$
-            </div>
+        <h2>Log 004: Orthogonality & Error</h2>
+        <p class="meta" style="color:#999; font-family:var(--font-sans); font-size:0.8rem; margin-top:-1rem; text-transform:uppercase;">19 Dec 2025</p>
 
-            <p>
-                But where do we get the normal $\mathbf{n}$? In a mesh, normals are stored. In an SDF, the normal is the <strong>Gradient</strong> of the distance field ($\nabla f$).
-                We approximate this gradient using finite differences:
-            </p>
+        <p>
+            In Least Squares regression, we try to approximate a target vector $\vec{y}$ using our feature space. 
+            The "Error" vector is simply the part of $\vec{y}$ that lives in the <strong>Orthogonal Complement</strong>. <span class="sidenote-number">3</span>
+        </p>
 
-            <div class="math-block">
-                $$ \mathbf{n} = \text{normalize}\left( \nabla f(\mathbf{p}) \right) \approx \text{normalize}\begin{bmatrix} 
-                f(p_x+\epsilon) - f(p_x-\epsilon) \\ 
-                f(p_y+\epsilon) - f(p_y-\epsilon) \\ 
-                f(p_z+\epsilon) - f(p_z-\epsilon) 
-                \end{bmatrix} $$
-            </div>
+        <aside class="sidenote">
+            <strong>3. Why Orthogonal?</strong>
+            If the error <em>weren't</em> orthogonal, it would mean there is still some "direction" left in the features that explains the target, and we could reduce the error further.
+        </aside>
 
-            <pre><code class="language-python">def get_normal(p):
-    e = 0.001
-    d = scene_sdf(p)
-    # The gradient points in the direction of greatest increase (away from surface)
-    gradient = np.array([
-        scene_sdf(p + [e, 0, 0]) - d,
-        scene_sdf(p + [0, e, 0]) - d,
-        scene_sdf(p + [0, 0, e]) - d
-    ])
-    return gradient / np.linalg.norm(gradient)</code></pre>
-
-            <p>
-                By strictly applying operations on vectors (norms, dot products, cross products) and scalars, we render a 3D image without ever defining a polygon.
-            </p>
-        </section>
+        <div class="visual-container">
+            <svg width="100%" height="200" viewBox="0 0 400 200">
+                <polygon points="50,150 150,180 350,130 250,100" fill="#eef" stroke="#99a" />
+                <text x="300" y="120" fill="#77a" font-family="sans-serif" font-size="12">Feature Space</text>
+                <line x1="150" y1="180" x2="150" y2="20" stroke="#333" stroke-width="2" />
+                <text x="140" y="20" fill="#333" font-family="sans-serif">y (Target)</text>
+                <line x1="150" y1="180" x2="250" y2="140" stroke="#0066cc" stroke-width="3" />
+                <text x="260" y="150" fill="#0066cc" font-family="sans-serif">Prediction</text>
+                <line x1="250" y1="140" x2="150" y2="20" stroke="#e74c3c" stroke-width="2" stroke-dasharray="5,5" />
+                <text x="210" y="80" fill="#e74c3c" font-family="sans-serif">Error</text>
+            </svg>
+            <em>Figure 4: The error vector is orthogonal to the prediction.</em>
+        </div>
 
     </main>
+
+    <footer style="text-align: center; padding: 3rem; color: #999; font-size: 0.8rem; font-family: var(--font-sans); border-top: 1px solid #eee;">
+        &copy; 2026 Abhinav Rastogi. MBA Candidate @ IIT Madras.
+    </footer>
 
 </body>
 </html>
