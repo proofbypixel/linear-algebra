@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proof by Pixel</title>
+    <title>Proof by Pixel | Abhinav Rastogi</title>
 
     <script>
         window.MathJax = {
@@ -162,12 +162,12 @@
             <div class="logo">PbyP</div>
             <h1>Proof by Pixel</h1>
         </div>
-        <div class="tagline">A Data Science Blog</div>
+        <div class="tagline">A mathematics blog by Abhinav Rastogi</div>
     </header>
 
     <nav>
         <a href="#">Home</a>
-        <a href="#">About Us</a>
+        <a href="#">About Me</a>
         <a href="#">Study Logs</a>
     </nav>
 
@@ -175,7 +175,7 @@
         <div class="content">
 
             <div class="intro-note">
-                <strong>A note to the reader:</strong> This blog is structured like a learning pipeline. We write study logs while learning the mathematics behind data models—one concept at a time.
+                <strong>A note to the reader:</strong> This blog is a personal learning pipeline. I write study logs while exploring the mathematical foundations of modern systems—one concept at a time.
             </div>
 
             <div class="section-label">Study Logs</div>
@@ -194,26 +194,18 @@
                             <li><strong>Sources:</strong> 
                                 <ul>
                                     <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
-                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
+                                    <li><em>Mathematics for Machine Learning</em>.</li>
                                 </ul>
                             </li>
-                            <li><strong>Prerequisites:</strong> High school mathematics, basic Python.</li>
-                            <li><strong>Interesting Score:</strong> 7/10.</li>
                             <li><strong>The Insight:</strong> As long as adding and scaling vectors doesn’t push you outside the set, you’re in a vector space.</li>
                         </ul>
                     </div>
 
-                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+                    <h3>Concept Summary</h3>
                     
                     <h4>1. Vector Space</h4>
                     <p>A vector space $V$ over a field $\mathbb{F}$ is a set where vector addition and scalar multiplication are defined and satisfy specific axioms. Formally, for all $\vec{u}, \vec{v} \in V$ and $\alpha \in \mathbb{F}$:</p>
                     <p>$$ \vec{u} + \vec{v} \in V \quad \text{and} \quad \alpha \vec{v} \in V $$</p>
-                    <p><strong>Python Awareness:</strong> Vector spaces show up as arrays supporting addition and scaling.</p>
-<pre>
-v = np.array([1, 2, 3])
-# Result remains in the same "space" (array of size 3)
-result = 2 * v + v  
-</pre>
 
                     <h4>2. Subspace</h4>
                     <p>A subspace $U \subseteq V$ is a subset that is itself a vector space. Instead of checking all axioms, we verify three conditions:</p>
@@ -222,32 +214,21 @@ result = 2 * v + v
                         <li>If $\vec{u}, \vec{v} \in U$, then $\vec{u} + \vec{v} \in U$ (Closed under addition).</li>
                         <li>If $\vec{v} \in U$ and $\alpha \in \mathbb{F}$, then $\alpha \vec{v} \in U$ (Closed under scaling).</li>
                     </ol>
-                    <p><strong>Python Awareness:</strong> Subspaces appear when linear combinations ($a \cdot u + b \cdot v$) stay within the same space.</p>
 
                     <h4>3. Span</h4>
                     <p>Given vectors $\vec{v}_1, \dots, \vec{v}_n$, their span is the set of all reachable vectors:</p>
                     <p>$$ \text{span}(\vec{v}_1, \dots, \vec{v}_n) = \{ \sum_{i=1}^{n} \alpha_i \vec{v}_i \mid \alpha_i \in \mathbb{F} \} $$</p>
                     <p>I’m starting to think of span as the <strong>boundary of possibility</strong>—anything outside it is unreachable without new vectors.</p>
-                    <p><strong>Python Awareness:</strong> Span corresponds to the column space of a matrix.</p>
-<pre>
-# Checking the rank (dimension of the span)
-rank = np.linalg.matrix_rank(X)
-</pre>
 
                     <h4>4. Linear Independence</h4>
                     <p>A set of vectors is linearly independent if the only way to sum them to zero is by setting all coefficients to zero:</p>
                     <p>$$ \sum \alpha_i \vec{v}_i = \vec{0} \implies \alpha_1 = \dots = \alpha_n = 0 $$</p>
                     <p><strong>Reframed:</strong> If one vector can be built from the others, it isn’t adding a new direction. Independent vectors expand the span; dependent ones don’t.</p>
-                    <p><strong>Python Awareness:</strong> Independence shows up as full column rank.</p>
-<pre>
-# If True, columns are independent
-is_independent = np.linalg.matrix_rank(X) == X.shape[1]
-</pre>
 
                     <hr>
 
-                    <h3>How This Connects to Data Science</h3>
-                    <p>I’m not a data scientist, but while reading about regression and feature engineering, these ideas kept showing up—especially around <strong>multicollinearity</strong>. Once I learned that features are treated as vectors, the connection became clear.</p>
+                    <h3>Applications</h3>
+                    <p>While reading about regression and feature engineering, these ideas kept showing up—especially around <strong>multicollinearity</strong>.</p>
 
                     <p><strong>Example: Redundant Features</strong><br>
                     Imagine a dataset with two columns:</p>
@@ -259,7 +240,7 @@ is_independent = np.linalg.matrix_rank(X) == X.shape[1]
                     <p>Since $\vec{v}_2 = 12 \cdot \vec{v}_1$, these vectors are <strong>Linearly Dependent</strong>.</p>
                     <ul>
                         <li><strong>Linear Algebra View:</strong> Both generate the same span.</li>
-                        <li><strong>Machine Learning View:</strong> One feature adds <em>no new information</em>.</li>
+                        <li><strong>Data Science View:</strong> One feature adds <em>no new information</em>.</li>
                     </ul>
 
                     <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
@@ -287,36 +268,21 @@ is_independent = np.linalg.matrix_rank(X) == X.shape[1]
                         <h4 style="margin-top:0;">📝 The Study Log</h4>
                         <ul>
                             <li><strong>Topics:</strong> Rank, Linear Mappings, Kernel/Image, Affine Spaces.</li>
-                            <li><strong>Sources:</strong> 
-                                <ul>
-                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
-                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
-                                </ul>
-                            </li>
+                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
                             <li><strong>Prerequisites:</strong> Vector spaces, span, linear independence.</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
                             <li><strong>The Insight:</strong> Information is either preserved (Rank) or lost (Kernel), never both. (The Rank-Nullity Theorem).</li>
                         </ul>
                     </div>
 
-                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+                    <h3>Concept Summary</h3>
 
                     <h4>1. Rank</h4>
                     <p>The rank of a matrix is the dimension of the space spanned by its columns. Rank tells us how many linearly independent directions <em>actually</em> exist in the data, regardless of how many columns the matrix has.</p>
                     <p>$$ \text{rank}(A) = \dim(\text{Col}(A)) $$</p>
-                    <p><strong>Python Awareness:</strong> Rank measures real information, not just dimensions.</p>
-<pre>
-# If features are redundant, rank < number of columns
-real_info = np.linalg.matrix_rank(X)
-</pre>
 
                     <h4>2. Linear Mapping ($T$)</h4>
                     <p>A function $T: V \to W$ is linear if it preserves structure (respects addition and scaling). It does not bend or shift space; it only rotates, stretches, or shears it.</p>
                     <p>$$ T(\vec{x}) = A\vec{x} $$</p>
-                    <p><strong>Python Awareness:</strong> Linear mappings are just matrix multiplication.</p>
-<pre>
-output = A @ x
-</pre>
 
                     <h4>3. Kernel & Image (The Anchors)</h4>
                     <ul>
@@ -329,19 +295,14 @@ output = A @ x
                     <p>An affine space is a vector space that has been <strong>shifted</strong> away from the origin.
                     $$ \mathcal{A} = \vec{v}_0 + U $$
                     where $U$ is a subspace and $\vec{v}_0$ is a fixed offset.</p>
-                    <p><strong>Python Awareness:</strong> Affine transformations add a shift vector.</p>
-<pre>
-# The "+ b" makes it Affine
-y = A @ x + b 
-</pre>
 
                     <hr>
 
-                    <h3>How This Connects to Data Science</h3>
-                    <p>I’m approaching this from reading rather than experience, but these concepts explain model capacity and bias.</p>
+                    <h3>Applications</h3>
+                    <p>These concepts explain model capacity and bias.</p>
 
                     <p><strong>1. Rank and Model Capacity</strong><br>
-                    If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. This explains why adding more features sometimes does nothing—if they are dependent, the Rank doesn't increase, and the model doesn't learn anything new.</p>
+                    If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. This explains why adding more features sometimes does nothing—if they are dependent, the Rank doesn't increase.</p>
 
                     <p><strong>2. Linear vs. Affine Models</strong><br>
                     A pure <strong>Linear</strong> model forces predictions to pass through the origin $(0,0)$.
@@ -373,46 +334,27 @@ y = A @ x + b
                         <h4 style="margin-top:0;">📝 The Study Log</h4>
                         <ul>
                             <li><strong>Topics:</strong> Norms, Inner Products, Length, Angle, Distance.</li>
-                            <li><strong>Sources:</strong> 
-                                <ul>
-                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
-                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Prerequisites:</strong> Vector spaces, linear mappings, basic Python.</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
+                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
+                            <li><strong>Prerequisites:</strong> Vector spaces, linear mappings.</li>
                             <li><strong>The Insight:</strong> Norms measure size, but Inner Products allow vectors to "talk" to each other (measure alignment).</li>
                         </ul>
                     </div>
 
-                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+                    <h3>Concept Summary</h3>
 
                     <h4>1. Norm (Length)</h4>
                     <p>A norm assigns a non-negative length to a vector. Formally, a norm $\|\cdot\|$ on $V$ satisfies the triangle inequality and scaling rules.</p>
                     <p>The most familiar is the Euclidean norm:</p>
                     <p>$$ \|\vec{v}\|_2 = \sqrt{\vec{v}^\top \vec{v}} $$</p>
-                    <p><strong>Python Awareness:</strong> Vector length is computed directly.</p>
-<pre>
-length = np.linalg.norm(v)
-</pre>
 
                     <h4>2. Distance (Derived from Norm)</h4>
                     <p>Once a norm exists, it defines a distance. Distance isn’t a new concept—it’s just the length of the difference vector.</p>
                     <p>$$ d(\vec{u}, \vec{v}) = \|\vec{u} - \vec{v}\| $$</p>
-                    <p><strong>Python Awareness:</strong> Distance is the norm of the difference.</p>
-<pre>
-dist = np.linalg.norm(u - v)
-</pre>
 
                     <h4>3. Inner Product & Angles</h4>
                     <p>An inner product introduces geometry (angles) into a vector space. It allows us to define <strong>Orthogonality</strong>.</p>
                     <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \|\vec{v}\|} $$</p>
                     <p>If $\langle \vec{u}, \vec{v} \rangle = 0$, the vectors are orthogonal (perpendicular). Zero interaction means zero alignment.</p>
-                    <p><strong>Python Awareness:</strong> Inner products are dot products.</p>
-<pre>
-# Check for orthogonality (approx 0)
-is_orthogonal = np.dot(u, v) == 0
-</pre>
 
                     <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
                         <svg width="100%" height="200" viewBox="0 0 400 200">
@@ -436,15 +378,15 @@ is_orthogonal = np.dot(u, v) == 0
 
                     <hr>
 
-                    <h3>How This Connects to Data Science</h3>
-                    <p>These concepts show up quietly but everywhere in ML.</p>
+                    <h3>Applications</h3>
+                    <p>These concepts show up quietly but everywhere in applied math and ML.</p>
 
                     <p><strong>1. Similarity vs. Distance</strong><br>
                     Two vectors can be close in distance but poorly aligned—or perfectly aligned but far apart.
                     <br><em>Example:</em> Cosine similarity uses the Inner Product (ignoring magnitude), while Euclidean distance uses the Norm (sensitive to magnitude).</p>
 
                     <p><strong>2. Regularization Intuition</strong><br>
-                    Regularization terms like $\lambda \|\vec{w}\|_2^2$ penalize large parameter norms. Geometrically, this constrains the solution to lie inside a specific shape (a ball for $\ell_2$, a diamond for $\ell_1$). This geometric constraint forces the model to be simpler.</p>
+                    Regularization terms like $\lambda \|\vec{w}\|_2^2$ penalize large parameter norms. Geometrically, this constrains the solution to lie inside a specific shape (a ball for $\ell_2$, a diamond for $\ell_1$).</p>
                     <div class="next-link">Next: <a onclick="openNext('post-004')">Log 004 &rarr; Orthogonality</a></div>
                 </div>
             </div>
@@ -460,43 +402,25 @@ is_orthogonal = np.dot(u, v) == 0
                         <h4 style="margin-top:0;">📝 The Study Log</h4>
                         <ul>
                             <li><strong>Topics:</strong> Angles, Orthogonality, Orthogonal Bases, Orthogonal Complements.</li>
-                            <li><strong>Sources:</strong> 
-                                <ul>
-                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
-                                    <li><em>Mathematics for Machine Learning</em> by Deisenroth, Faisal, Ong.</li>
-                                </ul>
-                            </li>
-                            <li><strong>Prerequisites:</strong> Inner products, norms; basic Python.</li>
-                            <li><strong>Interesting Score:</strong> 8/10.</li>
+                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
+                            <li><strong>Prerequisites:</strong> Inner products, norms.</li>
                             <li><strong>The Insight:</strong> Orthogonality doesn't just mean "90 degrees"—it means the vectors share no directional information (Independence).</li>
                         </ul>
                     </div>
 
-                    <h3>Concept Summary (With Math + Python Awareness)</h3>
+                    <h3>Concept Summary</h3>
 
                     <h4>1. Angle Between Vectors</h4>
                     <p>Once an inner product is defined, angles follow naturally. Angles measure alignment, not distance. Two vectors can be far apart but perfectly aligned.</p>
                     <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \, \|\vec{v}\|} $$</p>
-                    <p><strong>Python Awareness:</strong> Angle comes from normalized dot product.</p>
-<pre>
-cos_theta = np.dot(u, v) / (np.linalg.norm(u) * np.linalg.norm(v))
-</pre>
 
                     <h4>2. Orthogonality</h4>
                     <p>Two vectors are orthogonal if their inner product is zero. This implies they are completely independent in direction.</p>
                     <p>$$ \langle \vec{u}, \vec{v} \rangle = 0 $$</p>
-                    <p><strong>Python Awareness:</strong> Zero dot product implies orthogonality.</p>
-<pre>
-is_orthogonal = np.dot(u, v) == 0
-</pre>
 
                     <h4>3. Orthogonal Bases & Decomposition</h4>
                     <p>If a basis is orthogonal ($\langle \vec{v}_i, \vec{v}_j \rangle = 0$), it separates dimensions cleanly. Any vector $\vec{x}$ can be decomposed into independent pieces:</p>
                     <p>$$ \vec{x} = \sum_i \frac{\langle \vec{x}, \vec{v}_i \rangle}{\langle \vec{v}_i, \vec{v}_i \rangle} \vec{v}_i $$</p>
-                    <p><strong>Python Awareness:</strong> Decomposition becomes a series of simple dot products.</p>
-<pre>
-coeff_i = np.dot(x, v_i) / np.dot(v_i, v_i)
-</pre>
 
                     <h4>4. Orthogonal Complement ($U^\perp$)</h4>
                     <p>For a subspace $U$, the complement $U^\perp$ contains all vectors orthogonal to every vector in $U$. This splits the entire space cleanly:</p>
@@ -505,7 +429,7 @@ coeff_i = np.dot(x, v_i) / np.dot(v_i, v_i)
 
                     <hr>
 
-                    <h3>How This Connects to Data Science</h3>
+                    <h3>Applications</h3>
                     <p>I kept seeing orthogonality mentioned in error analysis and dimensionality reduction.</p>
 
                     <p><strong>Example: Error as an Orthogonal Component</strong><br>
@@ -535,8 +459,8 @@ coeff_i = np.dot(x, v_i) / np.dot(v_i, v_i)
 
         <div class="sidebar">
             <div class="widget">
-                <h3>About</h3>
-                <p><strong></strong><br>MBA Candidates @ IIT Madras (2027)<br><em>Exploring the intersection of Math and Data Science.</em></p>
+                <h3>About the Author</h3>
+                <p><strong>Abhinav Rastogi</strong><br>MBA Candidate @ IIT Madras (2027)<br><em>Documenting the journey from Linear Algebra to Deep Learning.</em></p>
             </div>
             <div class="widget">
                 <h3>Research Interests</h3>
