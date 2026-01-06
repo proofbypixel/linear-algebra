@@ -19,218 +19,247 @@
         /* --- DESIGN TOKENS --- */
         :root {
             --bg-color: #ffffff;
-            --text-main: #222;
-            --accent: #2c3e50;
-            --link-blue: #0066cc;
-            --code-bg: #f5f7f9;
+            --text-main: #333;
+            --text-light: #666;
+            
+            /* Ocean Blue Theme */
+            --ocean-primary: #005f73;  /* Deep Teal/Ocean */
+            --ocean-light: #e0f2f7;    /* Very light blue for backgrounds */
+            --ocean-border: #0a9396;   /* Slightly brighter for accents */
+            
             --font-serif: 'Merriweather', serif;
             --font-sans: 'Lato', sans-serif;
             --font-mono: 'Roboto Mono', monospace;
-            --content-width: 680px; /* Fixed width for reading comfort */
-            --sidenote-width: 260px;
+            
+            --main-width: 640px;       /* Academic standard width */
+            --sidenote-width: 240px;
         }
 
+        /* --- GLOBAL LAYOUT --- */
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: var(--font-serif);
-            line-height: 1.8;
-            font-size: 18px; 
+            line-height: 1.6;        /* Tighter line height */
+            font-size: 16px;         /* Smaller, cleaner font size */
             margin: 0;
-            font-weight: 300;
-            overflow-x: hidden; /* Prevent horizontal scroll from sidenotes */
+            padding: 0;
+            border-top: 6px solid var(--ocean-primary); /* Ocean Blue Top Boundary */
         }
 
-        /* --- THE LAYOUT STRATEGY --- */
-        /* We use a simple container to center everything */
-        .page-container {
-            max-width: var(--content-width);
-            margin: 0 auto; /* This forces the text to be perfectly centered */
-            position: relative; /* Allows sidenotes to position relative to this center */
-            padding: 0 1.5rem;
-        }
-
-        /* --- HEADER --- */
-        .main-header {
-            text-align: center;
-            padding: 5rem 1rem 4rem;
-            background: linear-gradient(to bottom, #fafafa, #fff);
-            border-bottom: 1px solid #eee;
-            margin-bottom: 3rem;
+        /* Container that holds everything centered */
+        .wrapper {
+            display: grid;
+            /* Grid Strategy: [Margin] [Main Content] [Gap] [Sidenote Area] [Margin] */
+            grid-template-columns: 1fr var(--main-width) 3rem var(--sidenote-width) 1fr;
             width: 100%;
         }
 
-        .logo-mark {
+        /* All direct children of wrapper default to the center column */
+        .wrapper > * { grid-column: 2; }
+
+        /* --- HEADER --- */
+        header {
+            grid-column: 2; /* Center align header with text */
+            text-align: center;
+            padding: 4rem 0 3rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
             font-family: var(--font-sans);
-            font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            padding: 5px 12px;
+            letter-spacing: 1.5px;
+            color: var(--ocean-primary);
+            font-weight: 700;
+            border: 1px solid var(--ocean-primary);
+            padding: 4px 10px;
             border-radius: 4px;
             display: inline-block;
             margin-bottom: 1rem;
         }
 
-        .main-header h1 {
+        h1 {
             font-family: var(--font-sans);
             font-weight: 900;
-            font-size: 3.5rem;
-            line-height: 1.1;
+            font-size: 2.6rem; /* Reduced from 3.5rem */
+            line-height: 1.2;
             margin: 0.5rem 0;
-            letter-spacing: -1px;
             color: #111;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
             font-family: var(--font-sans);
-            font-size: 1.25rem;
-            color: #666;
+            font-size: 1.1rem;
+            color: var(--text-light);
             font-weight: 300;
-            margin-top: 10px;
         }
 
-        /* --- INTRO NOTE (FIXED) --- */
-        .intro-note {
-            background-color: #f0f7fb;
-            border-left: 4px solid var(--link-blue);
-            padding: 1.5rem;
-            margin-bottom: 3rem;
-            font-family: var(--font-sans);
-            color: #444;
-            font-style: italic;
-            border-radius: 0 4px 4px 0;
-            /* This ensures it aligns perfectly with the text */
-            width: 100%; 
-            box-sizing: border-box;
-        }
-        .intro-note strong { font-style: normal; color: var(--link-blue); }
-
-        /* --- TYPOGRAPHY --- */
+        /* --- CONTENT STYLES --- */
         h2 {
             font-family: var(--font-sans);
             font-weight: 700;
-            font-size: 1.8rem;
-            margin-top: 4rem;
-            border-bottom: 1px solid #eee;
+            font-size: 1.5rem; /* Reduced */
+            margin-top: 3.5rem;
+            margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            color: #111;
+            border-bottom: 1px solid #eee;
+            color: #222;
         }
 
         h3 {
             font-family: var(--font-sans);
-            font-size: 1.3rem;
-            margin-top: 2.5rem;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-top: 2rem;
             color: #444;
         }
 
-        p { margin-bottom: 1.5rem; text-align: justify; }
+        p { margin-bottom: 1.2rem; text-align: justify; }
 
-        /* --- SIDENOTES (The "Float" Logic) --- */
-        /* Instead of a grid column, we position them absolute to the right of the text */
-        .sidenote-wrapper {
-            position: relative;
+        /* Intro Note Box */
+        .intro-box {
+            background: var(--ocean-light);
+            padding: 1.2rem 1.5rem;
+            border-left: 3px solid var(--ocean-primary);
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            color: #444;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 3rem;
+        }
+
+        /* --- SIDENOTES --- */
+        /* This class wraps a paragraph that has a sidenote */
+        .has-sidenote {
+            position: relative; 
         }
 
         .sidenote-number {
-            color: var(--link-blue);
+            color: var(--ocean-primary);
             vertical-align: super;
-            font-size: 0.6em;
+            font-size: 0.7em;
             font-weight: bold;
             cursor: pointer;
+            margin-left: 2px;
         }
 
         .sidenote {
-            position: absolute;
-            left: 105%; /* Pushes it just outside the text column */
-            top: 0;
-            width: var(--sidenote-width);
+            grid-column: 4; /* Moves to the right column */
             font-family: var(--font-sans);
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: #555;
+            font-size: 0.8rem; /* Smaller text */
+            line-height: 1.45;
+            color: #666;
+            margin-top: 0.3rem; /* Align top roughly with text */
             padding-left: 1rem;
-            border-left: 2px solid #eee;
+            border-left: 1px solid #ddd;
+        }
+        
+        .sidenote strong { color: var(--ocean-primary); display: block; margin-bottom: 4px; }
+        .sidenote ul { padding-left: 15px; margin: 0; }
+        .sidenote li { margin-bottom: 4px; }
+
+        /* --- MATH & CODE --- */
+        .math-block {
+            text-align: center;
+            padding: 1rem 0;
+            font-size: 1.1rem;
+            overflow-x: auto;
         }
 
-        /* --- VISUALS & CODE --- */
-        .visual-container {
+        .visual {
+            margin: 2rem 0;
+            padding: 1.5rem;
             background: #fafafa;
             border: 1px solid #eee;
-            padding: 2rem;
-            margin: 2rem 0;
             border-radius: 4px;
             text-align: center;
         }
         
-        .visual-container em { display: block; margin-top: 15px; font-family: var(--font-sans); font-size: 0.9rem; color: #777; font-style: normal; }
-
-        pre {
-            background: var(--code-bg);
-            padding: 1.5rem;
-            border-radius: 6px;
-            border-left: 4px solid var(--accent);
-            overflow-x: auto;
-            font-family: var(--font-mono);
+        .visual em {
+            display: block;
+            margin-top: 10px;
+            font-family: var(--font-sans);
             font-size: 0.85rem;
-            margin: 2rem 0;
+            color: #777;
+            font-style: normal;
         }
 
-        .math-block { text-align: center; padding: 1.5rem 0; overflow-x: auto; font-size: 1.15rem; }
+        /* --- FOOTER --- */
+        footer {
+            grid-column: 2;
+            text-align: center;
+            padding: 4rem 0;
+            margin-top: 4rem;
+            font-size: 0.8rem;
+            color: #999;
+            font-family: var(--font-sans);
+            border-top: 1px solid #eee;
+        }
 
         /* --- RESPONSIVE --- */
-        /* On small screens, hide sidenotes (or move them inline if you prefer) */
-        @media (max-width: 1100px) {
+        @media (max-width: 1250px) {
+            .wrapper {
+                /* Collapse right column */
+                grid-template-columns: 1fr minmax(auto, 600px) 1fr;
+            }
             .sidenote {
-                position: static; /* Stop floating */
-                width: 100%;
+                grid-column: 2; /* Move to center */
+                float: none;
                 margin: 1rem 0 2rem 0;
-                background: #f9f9f9;
+                background: #fcfcfc;
                 padding: 1rem;
-                border-left: 4px solid #ddd;
+                border-left: 3px solid #ddd;
+                width: 100%;
                 box-sizing: border-box;
             }
-            .page-container { padding: 0 1rem; }
         }
+        
+        @media (max-width: 700px) {
+             .wrapper { grid-template-columns: 1rem 1fr 1rem; }
+             h1 { font-size: 2rem; }
+        }
+
     </style>
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="logo-mark">PbyP</div>
-        <h1>Proof by Pixel</h1>
-        <div class="subtitle">A mathematics blog by Abhinav Rastogi</div>
-    </header>
-
-    <main class="page-container">
+    <div class="wrapper">
         
-        <div class="intro-note">
+        <header>
+            <div class="logo">PbyP</div>
+            <h1>Proof by Pixel</h1>
+            <div class="subtitle">A mathematics blog by Abhinav Rastogi</div>
+        </header>
+
+        <div class="intro-box">
             <strong>A note to the reader:</strong> This blog is a personal learning pipeline. I write study logs while exploring the mathematical foundations of modern systems—one concept at a time.
         </div>
 
         <h2>Log 001: Understanding the Basis of Data</h2>
-        <p class="meta" style="color:#999; font-family:var(--font-sans); font-size:0.8rem; margin-top:-1rem; text-transform:uppercase;">16 Dec 2025</p>
+        <p style="font-family:var(--font-sans); font-size:0.75rem; color:#999; text-transform:uppercase; margin-top:-0.8rem;">16 Dec 2025</p>
 
-        <div class="sidenote-wrapper">
-            <p>
-                When we look at a spreadsheet, we see rows and columns. When a linear algebraist looks at it, they see a vector space. 
-                The fundamental question is: does adding more data actually add more information? <span class="sidenote-number">1</span>
-            </p>
-            <aside class="sidenote">
-                <strong>📝 The Study Log</strong>
-                <ul>
-                    <li><strong>Topics:</strong> Vector Spaces, Span.</li>
-                    <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em>.</li>
-                </ul>
-            </aside>
-        </div>
+        <p>
+            When we look at a spreadsheet, we see rows and columns. When a linear algebraist looks at it, they see a vector space. 
+            The fundamental question is: does adding more data actually add more information? <span class="sidenote-number">1</span>
+        </p>
+        
+        <aside class="sidenote">
+            <strong>📝 The Study Log</strong>
+            <ul>
+                <li><strong>Topics:</strong> Vector Spaces, Span.</li>
+                <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em>.</li>
+            </ul>
+        </aside>
 
         <h3>1. Vector Space & Span</h3>
         <p>
             A vector space $V$ over a field $\mathbb{F}$ is a set where vector addition and scalar multiplication are defined and satisfy specific axioms.
         </p>
+        
         <div class="math-block">
             $$ \text{span}(\vec{v}_1, \dots, \vec{v}_n) = \{ \sum_{i=1}^{n} \alpha_i \vec{v}_i \mid \alpha_i \in \mathbb{F} \} $$
         </div>
@@ -241,53 +270,104 @@
             If one vector can be built from the others, it isn’t adding a new direction. Independent vectors expand the span; dependent ones don’t.
         </p>
 
-        <div class="visual-container">
-            <svg width="100%" height="150" viewBox="0 0 500 150">
-                <line x1="50" y1="100" x2="450" y2="100" stroke="#eee" />
-                <line x1="50" y1="100" x2="150" y2="100" stroke="#0066cc" stroke-width="3" />
-                <text x="100" y="80" fill="#0066cc" font-size="14" font-family="sans-serif">v1</text>
-                <line x1="50" y1="100" x2="350" y2="100" stroke="#e74c3c" stroke-width="2" stroke-dasharray="5,5" />
-                <text x="300" y="80" fill="#e74c3c" font-size="14" font-family="sans-serif">v2 (Redundant)</text>
+        <div class="visual">
+            <svg width="100%" height="120" viewBox="0 0 500 120">
+                <line x1="50" y1="80" x2="450" y2="80" stroke="#eee" />
+                <line x1="50" y1="80" x2="150" y2="80" stroke="#005f73" stroke-width="2.5" />
+                <text x="100" y="60" fill="#005f73" font-size="14" font-family="sans-serif">v1</text>
+                <line x1="50" y1="80" x2="350" y2="80" stroke="#ca6702" stroke-width="1.5" stroke-dasharray="5,5" />
+                <text x="300" y="60" fill="#ca6702" font-size="14" font-family="sans-serif">v2 (Redundant)</text>
             </svg>
             <em>Figure 1: Linearly Dependent vectors lie on the exact same trajectory.</em>
         </div>
 
         <h2>Log 002: Rank, Linear Mappings & Affine Spaces</h2>
-        <p class="meta" style="color:#999; font-family:var(--font-sans); font-size:0.8rem; margin-top:-1rem; text-transform:uppercase;">17 Dec 2025</p>
+        <p style="font-family:var(--font-sans); font-size:0.75rem; color:#999; text-transform:uppercase; margin-top:-0.8rem;">17 Dec 2025</p>
 
-        <div class="sidenote-wrapper">
-            <p>
-                Rank is the measure of "true" dimensionality. If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. <span class="sidenote-number">2</span>
-            </p>
-            <aside class="sidenote">
-                <strong>Insight: Rank-Nullity</strong>
-                Information is either preserved (Rank) or lost (Kernel), never both.
-            </aside>
-        </div>
+        <p>
+            Rank is the measure of "true" dimensionality. If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. <span class="sidenote-number">2</span>
+        </p>
+
+        <aside class="sidenote">
+            <strong>Insight: Rank-Nullity</strong>
+            Information is either preserved (Rank) or lost (Kernel), never both.
+            <br>
+            <span style="font-size:0.9em; margin-top:5px; display:block;">$\dim(V) = \text{rank}(T) + \dim(\ker(T))$</span>
+        </aside>
 
         <h3>1. Linear vs. Affine</h3>
         <p>
             A pure <strong>Linear</strong> model forces predictions to pass through the origin $(0,0)$. 
             An <strong>Affine</strong> model allows a shift via an intercept (bias term).
         </p>
-        
-        <div class="visual-container">
-            <svg width="100%" height="200" viewBox="0 0 400 200">
-                <g stroke="#eee" stroke-width="1"><line x1="200" y1="10" x2="200" y2="190" /><line x1="10" y1="150" x2="390" y2="150" /></g>
-                <line x1="100" y1="200" x2="300" y2="100" stroke="#0066cc" stroke-width="3" />
-                <text x="310" y="100" fill="#0066cc" font-size="14" font-family="sans-serif">Linear</text>
-                <line x1="100" y1="100" x2="300" y2="20" stroke="#e74c3c" stroke-width="3" />
-                <text x="310" y="20" fill="#e74c3c" font-size="14" font-family="sans-serif">Affine</text>
-                <circle cx="200" cy="150" r="4" fill="#333" />
-            </svg>
-            <em>Figure 2: Linear transformations are anchored to the origin; Affine ones can shift.</em>
+
+        <div class="math-block">
+            $$ \mathcal{A} = \vec{v}_0 + U $$
         </div>
 
-    </main>
+        <div class="visual">
+            <svg width="100%" height="160" viewBox="0 0 400 160">
+                <g stroke="#eee" stroke-width="1"><line x1="200" y1="10" x2="200" y2="150" /><line x1="10" y1="130" x2="390" y2="130" /></g>
+                <line x1="100" y1="160" x2="300" y2="100" stroke="#005f73" stroke-width="2.5" />
+                <text x="310" y="100" fill="#005f73" font-size="13" font-family="sans-serif">Linear</text>
+                <line x1="100" y1="100" x2="300" y2="40" stroke="#ca6702" stroke-width="2.5" />
+                <text x="310" y="40" fill="#ca6702" font-size="13" font-family="sans-serif">Affine</text>
+                <circle cx="200" cy="130" r="3" fill="#333" />
+            </svg>
+            <em>Figure 2: Affine transformations can shift away from origin.</em>
+        </div>
 
-    <footer style="text-align: center; padding: 3rem; color: #999; font-size: 0.8rem; font-family: var(--font-sans); border-top: 1px solid #eee;">
-        &copy; 2026 Abhinav Rastogi. MBA Candidate @ IIT Madras.
-    </footer>
+        <h2>Log 003: Norms & Inner Products</h2>
+        <p style="font-family:var(--font-sans); font-size:0.75rem; color:#999; text-transform:uppercase; margin-top:-0.8rem;">18 Dec 2025</p>
+
+        <p>
+            Norms measure size, but Inner Products allow vectors to "talk" to each other (measure alignment).
+            The most familiar is the Euclidean norm:
+        </p>
+        <div class="math-block">
+            $$ \|\vec{v}\|_2 = \sqrt{\vec{v}^\top \vec{v}} $$
+        </div>
+
+        <h3>The Geometry of Interaction</h3>
+        <p>
+            An inner product introduces geometry (angles) into a vector space. It allows us to define <strong>Orthogonality</strong>.
+            If $\langle \vec{u}, \vec{v} \rangle = 0$, the vectors are orthogonal. Zero interaction means zero alignment.
+        </p>
+        
+        <h2>Log 004: Orthogonality & Error</h2>
+        <p style="font-family:var(--font-sans); font-size:0.75rem; color:#999; text-transform:uppercase; margin-top:-0.8rem;">19 Dec 2025</p>
+
+        <p>
+            In Least Squares regression, we try to approximate a target vector $\vec{y}$ using our feature space. 
+            The "Error" vector is simply the part of $\vec{y}$ that lives in the <strong>Orthogonal Complement</strong>. <span class="sidenote-number">3</span>
+        </p>
+
+        <aside class="sidenote">
+            <strong>3. Why Orthogonal?</strong>
+            If the error <em>weren't</em> orthogonal, it would mean there is still some "direction" left in the features that explains the target.
+        </aside>
+
+        <div class="visual">
+            <svg width="100%" height="180" viewBox="0 0 400 180">
+                <polygon points="60,140 160,170 340,120 240,90" fill="#e0f2f7" stroke="#005f73" stroke-width="0.5" />
+                <text x="280" y="110" fill="#005f73" font-family="sans-serif" font-size="11">Feature Space</text>
+                
+                <line x1="160" y1="170" x2="160" y2="30" stroke="#333" stroke-width="2" />
+                <text x="150" y="30" fill="#333" font-family="sans-serif">y (Target)</text>
+                
+                <line x1="160" y1="170" x2="240" y2="130" stroke="#005f73" stroke-width="2.5" />
+                <text x="250" y="140" fill="#005f73" font-family="sans-serif">Prediction</text>
+                
+                <line x1="240" y1="130" x2="160" y2="30" stroke="#ca6702" stroke-width="2" stroke-dasharray="5,5" />
+                <text x="210" y="80" fill="#ca6702" font-family="sans-serif">Error (Ortho)</text>
+            </svg>
+            <em>Figure 3: The error vector is orthogonal to the prediction.</em>
+        </div>
+
+        <footer>
+            &copy; 2026 Abhinav Rastogi. MBA Candidate @ IIT Madras.
+        </footer>
+    </div>
 
 </body>
 </html>
