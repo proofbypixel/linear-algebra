@@ -3,479 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proof by Pixel | Abhinav Rastogi</title>
-
-    <script>
-        window.MathJax = {
-            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-            svg: { fontCache: 'global' }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Proof by Pixel: The Linear Algebra of Sight</title>
     
-    <script>
-        function togglePost(id) {
-            var fullContent = document.getElementById(id + '-full');
-            // Toggle Logic
-            if (fullContent.style.display === "none") {
-                fullContent.style.display = "block";
-                if (window.MathJax) MathJax.typesetPromise(); 
-            } else {
-                fullContent.style.display = "none";
-            }
-        }
-
-        function openNext(nextId) {
-            var nextContent = document.getElementById(nextId + '-full');
-            if (nextContent.style.display === "none") {
-                nextContent.style.display = "block";
-                if (window.MathJax) MathJax.typesetPromise(); 
-            }
-            document.getElementById(nextId).scrollIntoView({behavior: 'smooth'});
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
-        /* --- GLOBAL RESET --- */
-        * { box-sizing: border-box; } 
-        body { margin: 0; padding: 0; background-color: #f8f9fa; font-family: "Georgia", "Times New Roman", serif; color: #333; line-height: 1.6; font-size: 16px; overflow-x: hidden; }
-        a { color: #0066cc; text-decoration: none; cursor: pointer; }
-        a:hover { text-decoration: underline; }
-
-        /* --- COLORS --- */
+        /* --- DESIGN TOKENS --- */
         :root {
-            --brand-color: #2c3e50;
-            --link-blue: #0066cc;
+            --bg-color: #ffffff;
+            --text-main: #222222;
+            --text-muted: #666666;
+            --accent: #2962ff; /* Distill-like blue */
+            --code-bg: #f7f7f7;
+            --font-serif: 'Merriweather', serif;
+            --font-sans: 'Lato', sans-serif;
+            --font-mono: 'Roboto Mono', monospace;
         }
 
-        /* --- LAYOUT --- */
-        .wrapper { max-width: 960px; width: 96%; margin: 0 auto; background-color: #ffffff; border-left: 1px solid #ddd; border-right: 1px solid #ddd; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.03); }
-        
+        body {
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-serif);
+            line-height: 1.7;
+            font-size: 19px;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        /* --- LAYOUT GRID --- */
+        /* This 4-column grid handles the Tufte layout: margins, main text, and sidenotes */
+        .distill-grid {
+            display: grid;
+            grid-template-columns: 1fr minmax(auto, 680px) minmax(auto, 300px) 1fr;
+            column-gap: 3rem;
+        }
+
+        /* By default, elements sit in the center column (2) */
+        .distill-grid > * { grid-column: 2; }
+
         /* --- HEADER --- */
-        header { padding: 40px 40px 30px 40px; background-color: var(--brand-color); color: #ffffff; }
-        .header-top { display: flex; align-items: center; }
-        .logo { background-color: #ffffff; color: var(--brand-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 18px; padding: 5px 10px; border-radius: 3px; margin-right: 15px; letter-spacing: -0.5px; }
-        header h1 { margin: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 32px; letter-spacing: -1px; display: inline-block; }
-        .tagline { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; color: #cfd9e0; font-style: normal; margin-top: 5px; margin-left: 2px; opacity: 0.9; }
+        .article-header {
+            grid-column: 2;
+            text-align: center;
+            padding: 5rem 0 4rem;
+        }
 
-        /* --- NAVIGATION --- */
-        nav { padding: 15px 40px; background-color: #ecf0f1; border-bottom: 1px solid #ddd; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; text-transform: uppercase; }
-        nav a { margin-right: 25px; color: #555; transition: color 0.2s; }
-        nav a:hover { color: var(--brand-color); }
+        .article-header h1 {
+            font-family: var(--font-sans);
+            font-weight: 900;
+            font-size: 3rem;
+            line-height: 1.1;
+            margin: 0 0 1rem 0;
+            letter-spacing: -0.5px;
+        }
 
-        .container { display: flex; padding: 30px 40px; }
-        .content { flex: 2; padding-right: 40px; min-width: 0; } 
-        .sidebar { flex: 1; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; color: #666; border-left: 1px solid #eee; padding-left: 20px; min-width: 0; }
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            margin-bottom: 2rem;
+        }
 
-        /* --- SECTION HEADERS --- */
-        .section-label {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 12px;
-            font-weight: bold;
-            color: #999;
+        .meta {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
+            color: #888;
         }
 
-        /* --- POST STYLING --- */
-        .post { 
-            margin-bottom: 20px;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 10px;
-        }
-        .post:last-child { border-bottom: none; }
+        /* --- TYPOGRAPHY --- */
+        p { margin-bottom: 1.5rem; }
         
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
+        h2 {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
         }
 
-        .post-title { 
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
-            font-size: 16px; /* Smaller */
-            font-weight: 400; /* Non-bold */
-            color: var(--link-blue);
-            cursor: pointer; 
-            margin: 0;
-            line-height: 1.4;
-        }
-        .post-title:hover { text-decoration: underline; color: #003366; }
-
-        .post-date { 
-            font-size: 11px; 
-            color: #aaa; 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-            margin: 0;
-            white-space: nowrap;
-            margin-left: 10px;
+        /* --- SIDENOTES --- */
+        .sidenote-number {
+            color: var(--accent);
+            vertical-align: super;
+            font-size: 0.6em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 2px;
         }
 
-        /* Content Styling */
-        h3 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 18px; margin-top: 30px; border-bottom: 2px solid #333; padding-bottom: 5px; }
-        h4 { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; margin-top: 25px; font-weight: bold; color: #444; }
-        p { margin-bottom: 1.2em; text-align: left; }
-        pre { background:#f4f4f4; padding:15px; border-radius:5px; font-family: "Monaco", "Courier New", monospace; font-size:13px; overflow-x: auto; border: 1px solid #eee; border-left: 3px solid #333; }
-        
-        /* STUDY LOG META BOX */
-        .study-log { background-color: #f9f9f9; padding: 20px; border-left: 3px solid var(--brand-color); margin-bottom: 30px; border-radius: 0 5px 5px 0; margin-top: 20px; }
-        .study-log ul { list-style: none; padding: 0; margin: 0; font-size: 14px; color: #555; }
-        .study-log li { margin-bottom: 8px; }
-        .study-log strong { color: var(--brand-color); }
+        .sidenote {
+            grid-column: 3; /* Pushes text to the right margin */
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+            padding-left: 1rem;
+            border-left: 2px solid #eee;
+        }
 
-        /* Hidden by default */
-        .post-full { display: none; animation: fadeIn 0.5s; margin-top: 15px; padding-bottom: 20px; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* --- CODE & MATH --- */
+        pre {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 4px;
+            border-left: 4px solid var(--accent);
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            margin: 2rem 0;
+        }
 
-        .next-link { margin-top: 30px; padding-top: 20px; border-top: 1px dashed #ddd; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: bold; font-size: 14px; }
+        .math-block {
+            text-align: center;
+            padding: 1.5rem 0;
+            overflow-x: auto;
+        }
 
-        /* Intro Note */
-        .intro-note { background-color: #e8f4fc; border-left: 4px solid var(--brand-color); padding: 15px 20px; margin-bottom: 30px; color: #444; font-size: 15px; font-style: italic; border-radius: 0 4px 4px 0; }
-        .intro-note strong { color: var(--brand-color); font-style: normal; }
-
-        /* Sidebar Widgets */
-        .widget { margin-bottom: 40px; }
-        .widget h3 { font-size: 11px; text-transform: uppercase; color: #333; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px; margin-top: 0; }
-        .widget ul { list-style: none; padding: 0; margin: 0; }
-        .widget li { margin-bottom: 8px; }
-
-        @media (max-width: 768px) {
-            .container { flex-direction: column; padding: 20px; }
-            .sidebar { border-left: none; padding-left: 0; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px; }
-            .content { padding-right: 0; }
-            nav { padding: 15px 20px; }
-            header { padding: 30px 20px; }
-            .header-top { flex-direction: column; align-items: flex-start; }
-            .logo { margin-bottom: 10px; }
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1200px) {
+            .distill-grid {
+                grid-template-columns: 1fr minmax(auto, 90%) 1fr;
+            }
+            .sidenote {
+                grid-column: 2;
+                float: none;
+                margin: 1.5rem 0;
+                background: #fafafa;
+                padding: 1rem;
+                border-left: 4px solid #ddd;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="wrapper">
-    <header>
-        <div class="header-top">
-            <div class="logo">PbyP</div>
+    <main class="distill-grid">
+
+        <header class="article-header">
+            <div class="meta">Linear Algebra • Computer Graphics</div>
             <h1>Proof by Pixel</h1>
-        </div>
-        <div class="tagline">A mathematics blog by Abhinav Rastogi</div>
-    </header>
+            <p class="subtitle">Deriving the visual world from scratch using vectors, dot products, and gradients.</p>
+        </header>
 
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">About Me</a>
-        <a href="#">Study Logs</a>
-    </nav>
+        <section>
+            <p>
+                How do we teach a computer to see? Or conversely, how do we teach it to <em>draw</em>?
+                Traditional rasterization draws triangles. But there is a more mathematical approach: <strong>Ray Marching</strong>. 
+                It turns rendering into a root-finding problem, solvable with simple linear algebra. <span class="sidenote-number">1</span>
+            </p>
+            <aside class="sidenote">
+                1. This technique is distinct from Ray Tracing. Instead of calculating ray-triangle intersections, we march along a ray using a distance field.
+            </aside>
 
-    <div class="container">
-        <div class="content">
-
-            <div class="intro-note">
-                <strong>A note to the reader:</strong> This blog is a personal learning pipeline. I write study logs while exploring the mathematical foundations of modern systems—one concept at a time.
-            </div>
-
-            <div class="section-label">Study Logs</div>
+            <h2>1. The World as a Vector Space</h2>
             
-            <div class="post" id="post-001">
-                <div class="post-header" onclick="togglePost('post-001')">
-                    <div class="post-title">Log 001: Understanding the Basis of Data</div>
-                    <div class="post-date">16 Dec 2025</div>
-                </div>
-                <div class="post-full" id="post-001-full">
-                    
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Vector Spaces, Subspaces, Span, Linear Independence.</li>
-                            <li><strong>Sources:</strong> 
-                                <ul>
-                                    <li><em>Linear Algebra Done Right</em> by Sheldon Axler.</li>
-                                    <li><em>Mathematics for Machine Learning</em>.</li>
-                                </ul>
-                            </li>
-                            <li><strong>The Insight:</strong> As long as adding and scaling vectors doesn’t push you outside the set, you’re in a vector space.</li>
-                        </ul>
-                    </div>
+            <p>
+                In this paradigm, we define the world using a <strong>Signed Distance Function (SDF)</strong>.
+                An SDF, let's call it $f(\mathbf{p})$, takes any vector position $\mathbf{p} \in \mathbb{R}^3$ and returns a scalar: the distance to the nearest surface.
+            </p>
 
-                    <h3>Concept Summary</h3>
-                    
-                    <h4>1. Vector Space</h4>
-                    <p>A vector space $V$ over a field $\mathbb{F}$ is a set where vector addition and scalar multiplication are defined and satisfy specific axioms. Formally, for all $\vec{u}, \vec{v} \in V$ and $\alpha \in \mathbb{F}$:</p>
-                    <p>$$ \vec{u} + \vec{v} \in V \quad \text{and} \quad \alpha \vec{v} \in V $$</p>
-
-                    <h4>2. Subspace</h4>
-                    <p>A subspace $U \subseteq V$ is a subset that is itself a vector space. Instead of checking all axioms, we verify three conditions:</p>
-                    <ol>
-                        <li>$\vec{0} \in U$ (Contains the zero vector).</li>
-                        <li>If $\vec{u}, \vec{v} \in U$, then $\vec{u} + \vec{v} \in U$ (Closed under addition).</li>
-                        <li>If $\vec{v} \in U$ and $\alpha \in \mathbb{F}$, then $\alpha \vec{v} \in U$ (Closed under scaling).</li>
-                    </ol>
-
-                    <h4>3. Span</h4>
-                    <p>Given vectors $\vec{v}_1, \dots, \vec{v}_n$, their span is the set of all reachable vectors:</p>
-                    <p>$$ \text{span}(\vec{v}_1, \dots, \vec{v}_n) = \{ \sum_{i=1}^{n} \alpha_i \vec{v}_i \mid \alpha_i \in \mathbb{F} \} $$</p>
-                    <p>I’m starting to think of span as the <strong>boundary of possibility</strong>—anything outside it is unreachable without new vectors.</p>
-
-                    <h4>4. Linear Independence</h4>
-                    <p>A set of vectors is linearly independent if the only way to sum them to zero is by setting all coefficients to zero:</p>
-                    <p>$$ \sum \alpha_i \vec{v}_i = \vec{0} \implies \alpha_1 = \dots = \alpha_n = 0 $$</p>
-                    <p><strong>Reframed:</strong> If one vector can be built from the others, it isn’t adding a new direction. Independent vectors expand the span; dependent ones don’t.</p>
-
-                    <hr>
-
-                    <h3>Applications</h3>
-                    <p>While reading about regression and feature engineering, these ideas kept showing up—especially around <strong>multicollinearity</strong>.</p>
-
-                    <p><strong>Example: Redundant Features</strong><br>
-                    Imagine a dataset with two columns:</p>
-                    <ul>
-                        <li>$\vec{v}_1$: Age in years $\rightarrow [20, 30, 40]$</li>
-                        <li>$\vec{v}_2$: Age in months $\rightarrow [240, 360, 480]$</li>
-                    </ul>
-                    
-                    <p>Since $\vec{v}_2 = 12 \cdot \vec{v}_1$, these vectors are <strong>Linearly Dependent</strong>.</p>
-                    <ul>
-                        <li><strong>Linear Algebra View:</strong> Both generate the same span.</li>
-                        <li><strong>Data Science View:</strong> One feature adds <em>no new information</em>.</li>
-                    </ul>
-
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="150" viewBox="0 0 500 150">
-                            <line x1="50" y1="100" x2="450" y2="100" stroke="#eee" />
-                            <line x1="50" y1="100" x2="150" y2="100" stroke="blue" stroke-width="3" />
-                            <text x="100" y="80" fill="blue" font-size="12">v1</text>
-                            <line x1="50" y1="100" x2="350" y2="100" stroke="red" stroke-width="1" stroke-dasharray="5,5" />
-                            <text x="300" y="80" fill="red" font-size="12">v2 (Redundant)</text>
-                        </svg>
-                        <br><em style="font-size:11px; color:#888;">Figure 1: Linearly Dependent vectors lie on the exact same trajectory.</em>
-                    </div>
-                    <div class="next-link">Next: <a onclick="openNext('post-002')">Log 002 &rarr; Rank & Affine Spaces</a></div>
-                </div>
+            <div class="math-block">
+                $$ f: \mathbb{R}^3 \to \mathbb{R} $$
             </div>
 
-            <div class="post" id="post-002">
-                <div class="post-header" onclick="togglePost('post-002')">
-                    <div class="post-title">Log 002: Rank, Linear Mappings & Affine Spaces</div>
-                    <div class="post-date">17 Dec 2025</div>
-                </div>
-                <div class="post-full" id="post-002-full">
-                    
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Rank, Linear Mappings, Kernel/Image, Affine Spaces.</li>
-                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
-                            <li><strong>Prerequisites:</strong> Vector spaces, span, linear independence.</li>
-                            <li><strong>The Insight:</strong> Information is either preserved (Rank) or lost (Kernel), never both. (The Rank-Nullity Theorem).</li>
-                        </ul>
-                    </div>
+            <p>
+                If $f(\mathbf{p}) < 0$, the vector is inside the object. If $f(\mathbf{p}) = 0$, it is on the surface.
+                For a sphere at the origin with radius $r$, the math is simply the Euclidean norm of the vector:
+            </p>
 
-                    <h3>Concept Summary</h3>
+            <div class="math-block">
+                $$ f(\mathbf{p}) = \|\mathbf{p}\| - r $$
+            </div>
+            
+            <p>Here is how we translate that linear algebra concept into code:</p>
 
-                    <h4>1. Rank</h4>
-                    <p>The rank of a matrix is the dimension of the space spanned by its columns. Rank tells us how many linearly independent directions <em>actually</em> exist in the data, regardless of how many columns the matrix has.</p>
-                    <p>$$ \text{rank}(A) = \dim(\text{Col}(A)) $$</p>
+            <pre><code class="language-python">import numpy as np
 
-                    <h4>2. Linear Mapping ($T$)</h4>
-                    <p>A function $T: V \to W$ is linear if it preserves structure (respects addition and scaling). It does not bend or shift space; it only rotates, stretches, or shears it.</p>
-                    <p>$$ T(\vec{x}) = A\vec{x} $$</p>
+def sphere_sdf(p, radius):
+    # p is a numpy vector [x, y, z]
+    # We use the L2 Norm (Euclidean distance)
+    return np.linalg.norm(p) - radius</code></pre>
 
-                    <h4>3. Kernel & Image (The Anchors)</h4>
-                    <ul>
-                        <li><strong>Kernel (Null Space):</strong> Inputs that get collapsed to zero ($\vec{x}$ where $A\vec{x} = \vec{0}$).</li>
-                        <li><strong>Image (Range):</strong> Everything the mapping can produce.</li>
-                    </ul>
-                    <p><strong>Rank-Nullity Insight:</strong> $\dim(V) = \text{rank}(T) + \dim(\ker(T))$. Information is either kept or killed.</p>
+            <h2>2. The Ray (Parametric Line)</h2>
 
-                    <h4>4. Affine Spaces</h4>
-                    <p>An affine space is a vector space that has been <strong>shifted</strong> away from the origin.
-                    $$ \mathcal{A} = \vec{v}_0 + U $$
-                    where $U$ is a subspace and $\vec{v}_0$ is a fixed offset.</p>
-
-                    <hr>
-
-                    <h3>Applications</h3>
-                    <p>These concepts explain model capacity and bias.</p>
-
-                    <p><strong>1. Rank and Model Capacity</strong><br>
-                    If a dataset has 10 features but the feature matrix has a Rank of 3, the model effectively operates in 3 dimensions. This explains why adding more features sometimes does nothing—if they are dependent, the Rank doesn't increase.</p>
-
-                    <p><strong>2. Linear vs. Affine Models</strong><br>
-                    A pure <strong>Linear</strong> model forces predictions to pass through the origin $(0,0)$.
-                    An <strong>Affine</strong> model allows a shift via an intercept (bias term).</p>
-                    
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="200" viewBox="0 0 400 200">
-                             <g stroke="#eee" stroke-width="1"><line x1="200" y1="10" x2="200" y2="190" /><line x1="10" y1="150" x2="390" y2="150" /></g>
-                            <line x1="100" y1="200" x2="300" y2="100" stroke="blue" stroke-width="2" />
-                            <text x="310" y="100" fill="blue" font-size="12">Linear</text>
-                            <line x1="100" y1="100" x2="300" y2="20" stroke="red" stroke-width="2" />
-                            <text x="310" y="20" fill="red" font-size="12">Affine</text>
-                            <circle cx="200" cy="150" r="3" fill="#333" />
-                        </svg>
-                        <br><em style="font-size:12px; color:#666;">Figure 1: Linear vs. Affine transformations.</em>
-                    </div>
-                    <div class="next-link">Next: <a onclick="openNext('post-003')">Log 003 &rarr; Norms & Inner Products</a></div>
-                </div>
+            <p>
+                To see the sphere, we shoot rays from a camera. A ray is defined by a parametric line equation. 
+                Given an origin vector $\mathbf{ro}$ and a normalized direction vector $\mathbf{rd}$:
+            </p>
+            
+            <div class="math-block">
+                $$ \mathbf{p}(t) = \mathbf{ro} + t \cdot \mathbf{rd} $$
             </div>
 
-            <div class="post" id="post-003">
-                <div class="post-header" onclick="togglePost('post-003')">
-                    <div class="post-title">Log 003: Norms & Inner Products</div>
-                    <div class="post-date">18 Dec 2025</div>
-                </div>
-                <div class="post-full" id="post-003-full">
-                    
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Norms, Inner Products, Length, Angle, Distance.</li>
-                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
-                            <li><strong>Prerequisites:</strong> Vector spaces, linear mappings.</li>
-                            <li><strong>The Insight:</strong> Norms measure size, but Inner Products allow vectors to "talk" to each other (measure alignment).</li>
-                        </ul>
-                    </div>
+            <p>
+                Our goal is to find the smallest scalar $t > 0$ such that $f(\mathbf{p}(t)) = 0$. <span class="sidenote-number">2</span>
+            </p>
+            <aside class="sidenote">
+                2. Since $\mathbf{rd}$ is normalized ($||\mathbf{rd}|| = 1$), the scalar $t$ represents the exact distance traveled along the ray.
+            </aside>
 
-                    <h3>Concept Summary</h3>
+            <h2>3. Lighting via Dot Products</h2>
 
-                    <h4>1. Norm (Length)</h4>
-                    <p>A norm assigns a non-negative length to a vector. Formally, a norm $\|\cdot\|$ on $V$ satisfies the triangle inequality and scaling rules.</p>
-                    <p>The most familiar is the Euclidean norm:</p>
-                    <p>$$ \|\vec{v}\|_2 = \sqrt{\vec{v}^\top \vec{v}} $$</p>
+            <p>
+                Once our ray hits a surface at point $\mathbf{p}$, we need to calculate how light reflects off it. 
+                Lambertian reflectance states that the intensity of light is proportional to the cosine of the angle between the surface normal $\mathbf{n}$ and the light direction $\mathbf{l}$.
+            </p>
 
-                    <h4>2. Distance (Derived from Norm)</h4>
-                    <p>Once a norm exists, it defines a distance. Distance isn’t a new concept—it’s just the length of the difference vector.</p>
-                    <p>$$ d(\vec{u}, \vec{v}) = \|\vec{u} - \vec{v}\| $$</p>
+            <p>
+                In linear algebra, the cosine of the angle between two normalized vectors is equivalent to their <strong>Dot Product</strong>:
+            </p>
 
-                    <h4>3. Inner Product & Angles</h4>
-                    <p>An inner product introduces geometry (angles) into a vector space. It allows us to define <strong>Orthogonality</strong>.</p>
-                    <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \|\vec{v}\|} $$</p>
-                    <p>If $\langle \vec{u}, \vec{v} \rangle = 0$, the vectors are orthogonal (perpendicular). Zero interaction means zero alignment.</p>
-
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="200" viewBox="0 0 400 200">
-                            <circle cx="50" cy="150" r="3" fill="#333" />
-                            <text x="35" y="165" fill="#666" font-size="12">0</text>
-                            
-                            <line x1="50" y1="150" x2="250" y2="150" stroke="blue" stroke-width="3" />
-                            <text x="260" y="155" fill="blue" font-weight="bold">u</text>
-                            
-                            <line x1="50" y1="150" x2="200" y2="30" stroke="red" stroke-width="3" />
-                            <text x="190" y="20" fill="red" font-weight="bold">v</text>
-                            
-                            <line x1="250" y1="150" x2="200" y2="30" stroke="green" stroke-width="2" stroke-dasharray="5,5" />
-                            <text x="235" y="90" fill="green" font-size="12">||u - v||</text>
-                            
-                            <path d="M 90 150 A 40 40 0 0 0 82 124" stroke="#666" fill="none" />
-                            <text x="95" y="135" fill="#666" font-size="14">θ</text>
-                        </svg>
-                        <br><em style="font-size:12px; color:#888;">Figure 1: Angle, Distance, and Inner Product.</em>
-                    </div>
-
-                    <hr>
-
-                    <h3>Applications</h3>
-                    <p>These concepts show up quietly but everywhere in applied math and ML.</p>
-
-                    <p><strong>1. Similarity vs. Distance</strong><br>
-                    Two vectors can be close in distance but poorly aligned—or perfectly aligned but far apart.
-                    <br><em>Example:</em> Cosine similarity uses the Inner Product (ignoring magnitude), while Euclidean distance uses the Norm (sensitive to magnitude).</p>
-
-                    <p><strong>2. Regularization Intuition</strong><br>
-                    Regularization terms like $\lambda \|\vec{w}\|_2^2$ penalize large parameter norms. Geometrically, this constrains the solution to lie inside a specific shape (a ball for $\ell_2$, a diamond for $\ell_1$).</p>
-                    <div class="next-link">Next: <a onclick="openNext('post-004')">Log 004 &rarr; Orthogonality</a></div>
-                </div>
+            <div class="math-block">
+                $$ Intensity = \max(0, \mathbf{n} \cdot \mathbf{l}) $$
             </div>
 
-            <div class="post" id="post-004">
-                <div class="post-header" onclick="togglePost('post-004')">
-                    <div class="post-title">Log 004: Angles, Orthogonality & Structure</div>
-                    <div class="post-date">19 Dec 2025</div>
-                </div>
-                <div class="post-full" id="post-004-full">
-                    
-                    <div class="study-log">
-                        <h4 style="margin-top:0;">📝 The Study Log</h4>
-                        <ul>
-                            <li><strong>Topics:</strong> Angles, Orthogonality, Orthogonal Bases, Orthogonal Complements.</li>
-                            <li><strong>Sources:</strong> <em>Linear Algebra Done Right</em> (Axler).</li>
-                            <li><strong>Prerequisites:</strong> Inner products, norms.</li>
-                            <li><strong>The Insight:</strong> Orthogonality doesn't just mean "90 degrees"—it means the vectors share no directional information (Independence).</li>
-                        </ul>
-                    </div>
+            <p>
+                But where do we get the normal $\mathbf{n}$? In a mesh, normals are stored. In an SDF, the normal is the <strong>Gradient</strong> of the distance field ($\nabla f$).
+                We approximate this gradient using finite differences:
+            </p>
 
-                    <h3>Concept Summary</h3>
-
-                    <h4>1. Angle Between Vectors</h4>
-                    <p>Once an inner product is defined, angles follow naturally. Angles measure alignment, not distance. Two vectors can be far apart but perfectly aligned.</p>
-                    <p>$$ \cos(\theta) = \frac{\langle \vec{u}, \vec{v} \rangle}{\|\vec{u}\| \, \|\vec{v}\|} $$</p>
-
-                    <h4>2. Orthogonality</h4>
-                    <p>Two vectors are orthogonal if their inner product is zero. This implies they are completely independent in direction.</p>
-                    <p>$$ \langle \vec{u}, \vec{v} \rangle = 0 $$</p>
-
-                    <h4>3. Orthogonal Bases & Decomposition</h4>
-                    <p>If a basis is orthogonal ($\langle \vec{v}_i, \vec{v}_j \rangle = 0$), it separates dimensions cleanly. Any vector $\vec{x}$ can be decomposed into independent pieces:</p>
-                    <p>$$ \vec{x} = \sum_i \frac{\langle \vec{x}, \vec{v}_i \rangle}{\langle \vec{v}_i, \vec{v}_i \rangle} \vec{v}_i $$</p>
-
-                    <h4>4. Orthogonal Complement ($U^\perp$)</h4>
-                    <p>For a subspace $U$, the complement $U^\perp$ contains all vectors orthogonal to every vector in $U$. This splits the entire space cleanly:</p>
-                    <p>$$ V = U \oplus U^\perp $$</p>
-                    <p>Every vector can be separated into a "Signal" part (in $U$) and a "Noise" part (in $U^\perp$).</p>
-
-                    <hr>
-
-                    <h3>Applications</h3>
-                    <p>I kept seeing orthogonality mentioned in error analysis and dimensionality reduction.</p>
-
-                    <p><strong>Example: Error as an Orthogonal Component</strong><br>
-                    In Least Squares regression, we try to approximate a target vector $\vec{y}$ using our feature space (Col($X$)). The "Error" vector is simply the part of $\vec{y}$ that lives in the Orthogonal Complement.</p>
-                    
-                    <p>If the error <em>weren't</em> orthogonal, it would mean there is still some "direction" left in the features that explains the target, and we could reduce the error further.</p>
-                    
-                    <div style="text-align:center; margin: 30px 0; border:1px solid #ddd; padding:10px; background:white;">
-                        <svg width="100%" height="200" viewBox="0 0 400 200">
-                            <polygon points="50,150 150,180 350,130 250,100" fill="#eef" stroke="#99a" />
-                            <text x="300" y="120" fill="#77a">Feature Space</text>
-                            <line x1="150" y1="180" x2="150" y2="20" stroke="#333" stroke-width="2" />
-                            <text x="140" y="20" fill="#333">y (Target)</text>
-                            <line x1="150" y1="180" x2="250" y2="140" stroke="blue" stroke-width="3" />
-                            <text x="260" y="150" fill="blue">Prediction</text>
-                            <line x1="250" y1="140" x2="150" y2="20" stroke="red" stroke-width="2" stroke-dasharray="5,5" />
-                            <text x="210" y="80" fill="red">Error</text>
-                        </svg>
-                        <br><em style="font-size:11px; color:#888;">Figure 1: The error vector is orthogonal to the prediction.</em>
-                    </div>
-
-                    <div class="next-link">&uarr; Close Log</div>
-                </div>
+            <div class="math-block">
+                $$ \mathbf{n} = \text{normalize}\left( \nabla f(\mathbf{p}) \right) \approx \text{normalize}\begin{bmatrix} 
+                f(p_x+\epsilon) - f(p_x-\epsilon) \\ 
+                f(p_y+\epsilon) - f(p_y-\epsilon) \\ 
+                f(p_z+\epsilon) - f(p_z-\epsilon) 
+                \end{bmatrix} $$
             </div>
 
-        </div>
+            <pre><code class="language-python">def get_normal(p):
+    e = 0.001
+    d = scene_sdf(p)
+    # The gradient points in the direction of greatest increase (away from surface)
+    gradient = np.array([
+        scene_sdf(p + [e, 0, 0]) - d,
+        scene_sdf(p + [0, e, 0]) - d,
+        scene_sdf(p + [0, 0, e]) - d
+    ])
+    return gradient / np.linalg.norm(gradient)</code></pre>
 
-        <div class="sidebar">
-            <div class="widget">
-                <h3>About the Author</h3>
-                <p><strong>Abhinav Rastogi</strong><br>MBA Candidate @ IIT Madras (2027)<br><em>Documenting the journey from Linear Algebra to Deep Learning.</em></p>
-            </div>
-            <div class="widget">
-                <h3>Research Interests</h3>
-                <ul>
-                    <li><a href="#">Linear Algebra</a></li>
-                    <li><a href="#">Statistics & Regression</a></li>
-                    <li><a href="#">Python for Data Science</a></li>
-                </ul>
-            </div>
-            <div class="widget">
-                <h3>Search</h3>
-                <input type="text" placeholder="Search..." style="width: 100%; padding: 5px; margin-top: 5px;">
-            </div>
-        </div>
-    </div>
-</div>
+            <p>
+                By strictly applying operations on vectors (norms, dot products, cross products) and scalars, we render a 3D image without ever defining a polygon.
+            </p>
+        </section>
+
+    </main>
+
 </body>
 </html>
